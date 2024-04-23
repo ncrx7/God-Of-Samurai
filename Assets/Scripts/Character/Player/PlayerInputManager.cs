@@ -8,10 +8,16 @@ public class PlayerInputManager : MonoBehaviour
     public static PlayerInputManager Instance { get; private set; }
     private NewControls _playerControls;
 
+    [Header("Player Movement fields")]
     [SerializeField] private Vector2 _movementInput;
     public float VerticalInput { get; private set; }
     public float HorizontalInput { get; private set; }
     public float MoveAmount { get; private set; }
+
+    [Header("Camera Movement fields")]
+    [SerializeField] private Vector2 _cameraMovementInput;
+    public float CameraVerticalInput { get; private set; }
+    public float CameraHorizontalInput { get; private set; }
 
     private void OnEnable()
     {
@@ -20,6 +26,7 @@ public class PlayerInputManager : MonoBehaviour
             _playerControls = new NewControls();
 
             _playerControls.PlayerMovement.Movement.performed += i => _movementInput = i.ReadValue<Vector2>();
+            _playerControls.PlayerCamera.Movement.performed += i => _cameraMovementInput = i.ReadValue<Vector2>();
         }
 
         _playerControls.Enable();
@@ -49,6 +56,11 @@ public class PlayerInputManager : MonoBehaviour
         Instance.enabled = false;
     }
 
+    private void Update()
+    {
+        HandleMovementInput();
+        HandleCameraMovementInput();
+    }
     private void OnApplicationFocus(bool focusStatus)
     {
         if(enabled)
@@ -82,6 +94,7 @@ public class PlayerInputManager : MonoBehaviour
         HorizontalInput = _movementInput.x;
 
         MoveAmount = Mathf.Clamp01(Mathf.Abs(VerticalInput) + Mathf.Abs(HorizontalInput));
+        Debug.Log("move amount: " + MoveAmount);
 
         if (MoveAmount <= 0.5 && MoveAmount > 0)
         {
@@ -93,9 +106,11 @@ public class PlayerInputManager : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void HandleCameraMovementInput()
     {
-        HandleMovementInput();
+        CameraVerticalInput = _cameraMovementInput.y;
+        CameraHorizontalInput = _cameraMovementInput.x;
     }
+
 
 }

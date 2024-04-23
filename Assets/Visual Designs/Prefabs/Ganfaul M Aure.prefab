@@ -2107,8 +2107,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networkPosition:
     m_InternalValue: {x: 0, y: 0, z: 0}
+  networkRotation:
+    m_InternalValue: {x: 0, y: 0, z: 0, w: 1}
   NetworkPositionVelocity: {x: 0, y: 0, z: 0}
   NetworkPositionSmoothTime: 0.1
+  NetworkRotationSmoothTime: 0.1
 --- !u!114 &1750095851261949932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2135,8 +2138,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8fbdc607eea92e43bcff2da61763d4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _runningSpeed: 3
-  _walkingSpeed: 5
+  _runningSpeed: 5
+  _walkingSpeed: 3
+  _rotationSpeed: 15
   _playerManager: {fileID: 1750095851261949932}
 --- !u!143 &2509677951764323108
 CharacterController:
