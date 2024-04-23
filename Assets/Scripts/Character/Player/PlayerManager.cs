@@ -14,6 +14,11 @@ public class PlayerManager : CharacterManager
     {
         base.Update();
 
+        if(!IsOwner)
+        {
+            return;
+        }
+        
         _playerLocomotionManager.HandleAllMovement();
     }
 }

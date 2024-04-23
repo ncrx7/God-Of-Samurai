@@ -8,7 +8,10 @@ public class PlayerInputManager : MonoBehaviour
     public static PlayerInputManager Instance { get; private set; }
     private NewControls _playerControls;
 
-    [SerializeField] private Vector2 movementInput;
+    [SerializeField] private Vector2 _movementInput;
+    public float VerticalInput { get; private set; }
+    public float HorizontalInput { get; private set; }
+    public float MoveAmount { get; private set; }
 
     private void OnEnable()
     {
@@ -16,7 +19,7 @@ public class PlayerInputManager : MonoBehaviour
         {
             _playerControls = new NewControls();
 
-            _playerControls.PlayerMovement.Movement.performed += i => movementInput = i.ReadValue<Vector2>();
+            _playerControls.PlayerMovement.Movement.performed += i => _movementInput = i.ReadValue<Vector2>();
         }
 
         _playerControls.Enable();
@@ -46,6 +49,20 @@ public class PlayerInputManager : MonoBehaviour
         Instance.enabled = false;
     }
 
+    private void OnApplicationFocus(bool focusStatus)
+    {
+        if(enabled)
+        {
+            if(focusStatus)
+            {
+                _playerControls.Enable();
+            }
+            else
+            {
+                _playerControls.Disable();
+            }
+        }
+    }
     private void OnSceneChanged(Scene oldScene, Scene newScene)
     {
         // Player controls doesn't work on main menu thanks to here
@@ -57,6 +74,28 @@ public class PlayerInputManager : MonoBehaviour
         {
             Instance.enabled = false;
         }
+    }
+
+    private void HandleMovementInput()
+    {
+        VerticalInput = _movementInput.y;
+        HorizontalInput = _movementInput.x;
+
+        MoveAmount = Mathf.Clamp01(Mathf.Abs(VerticalInput) + Mathf.Abs(HorizontalInput));
+
+        if (MoveAmount <= 0.5 && MoveAmount > 0)
+        {
+            MoveAmount = 0.5f;
+        }
+        else if (MoveAmount > 0.5 && MoveAmount <= 1)
+        {
+            MoveAmount = 1;
+        }
+    }
+
+    private void Update()
+    {
+        HandleMovementInput();
     }
 
 }
