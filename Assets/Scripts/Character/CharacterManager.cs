@@ -7,18 +7,27 @@ public class CharacterManager : NetworkBehaviour
 {
     public CharacterController characterController;
     public CharacterNetworkManager characterNetworkManager;
-    public Animator animator;
+    public NetworkObject networkObject;
+    public ulong networkID;
+    //public Animator animator;
     protected virtual void Awake()
     {
         DontDestroyOnLoad(this);
         characterController = GetComponent<CharacterController>();
         characterNetworkManager = GetComponent<CharacterNetworkManager>();
-        animator = GetComponent<Animator>();
+        //animator = GetComponent<Animator>();
+        networkObject = GetComponent<NetworkObject>();
+    }
+
+    protected virtual void Start()
+    {
+        networkID = networkObject.NetworkObjectId;
+        Debug.Log("network ıd of char: " + networkID);
     }
 
     protected virtual void Update()
     {
-        if(IsOwner) // If local character (our character)
+        if (IsOwner) // If local character (our character)
         {
             characterNetworkManager.networkPosition.Value = transform.position;
             characterNetworkManager.networkRotation.Value = transform.rotation;
@@ -26,17 +35,17 @@ public class CharacterManager : NetworkBehaviour
         else // If network character who came from network (other character)
         {
             transform.position = Vector3.SmoothDamp(transform.position,
-             characterNetworkManager.networkPosition.Value, 
-             ref characterNetworkManager.NetworkPositionVelocity, 
+             characterNetworkManager.networkPosition.Value,
+             ref characterNetworkManager.NetworkPositionVelocity,
              characterNetworkManager.NetworkPositionSmoothTime);
 
-             transform.rotation = Quaternion.Slerp
-             (transform.rotation, characterNetworkManager.networkRotation.Value, characterNetworkManager.NetworkRotationSmoothTime);
+            transform.rotation = Quaternion.Slerp
+            (transform.rotation, characterNetworkManager.networkRotation.Value, characterNetworkManager.NetworkRotationSmoothTime);
         }
     }
 
     protected virtual void LateUpdate()
     {
-        
+
     }
 }

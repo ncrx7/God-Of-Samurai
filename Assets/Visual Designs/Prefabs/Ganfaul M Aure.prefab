@@ -2055,7 +2055,6 @@ GameObject:
   - component: {fileID: 1750095851261949932}
   - component: {fileID: -9095660576776416924}
   - component: {fileID: 2509677951764323108}
-  - component: {fileID: 4830668008166086468}
   m_Layer: 0
   m_Name: Ganfaul M Aure
   m_TagString: Untagged
@@ -2113,7 +2112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9995aaeba1594447a87e3edca5b331a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _characterManager: {fileID: 0}
+  animator: {fileID: 5144083956852261932}
 --- !u!114 &-5319059843077935822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2149,6 +2148,12 @@ MonoBehaviour:
   NetworkPositionVelocity: {x: 0, y: 0, z: 0}
   NetworkPositionSmoothTime: 0.1
   NetworkRotationSmoothTime: 0.1
+  animatorHorizontalValue:
+    m_InternalValue: 0
+  animatorVerticalValue:
+    m_InternalValue: 0
+  networkMoveAmount:
+    m_InternalValue: 0
 --- !u!114 &1750095851261949932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2162,9 +2167,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 0}
-  animator: {fileID: 5144083956852261932}
-  playerAnimatorManager: {fileID: 4830668008166086468}
-  _playerLocomotionManager: {fileID: -9095660576776416924}
+  characterNetworkManager: {fileID: 0}
+  networkObject: {fileID: 0}
+  networkID: 0
 --- !u!114 &-9095660576776416924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2199,19 +2204,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.99, z: 0}
---- !u!114 &4830668008166086468
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5401412305628562371}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9995aaeba1594447a87e3edca5b331a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _characterManager: {fileID: 1750095851261949932}
 --- !u!1 &5905554903059582489
 GameObject:
   m_ObjectHideFlags: 0

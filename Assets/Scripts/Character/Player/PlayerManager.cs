@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class PlayerManager : CharacterManager
 {
-    public PlayerAnimatorManager playerAnimatorManager;
-    [SerializeField] PlayerLocomotionManager _playerLocomotionManager;
+    //public PlayerAnimatorManager playerAnimatorManager;
+    //[SerializeField] PlayerLocomotionManager _playerLocomotionManager;
     protected override void Awake()
     {
         base.Awake();
+    }
+    protected override void Start()
+    {
+        base.Start();
     }
 
     protected override void Update()
@@ -20,7 +24,7 @@ public class PlayerManager : CharacterManager
             return;
         }
 
-        _playerLocomotionManager.HandleAllMovement();
+        //_playerLocomotionManager.HandleAllMovement();
     }
 
     protected override void LateUpdate()

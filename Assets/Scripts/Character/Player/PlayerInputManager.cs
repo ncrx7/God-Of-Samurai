@@ -65,9 +65,9 @@ public class PlayerInputManager : MonoBehaviour
     }
     private void OnApplicationFocus(bool focusStatus)
     {
-        if(enabled)
+        if (enabled)
         {
-            if(focusStatus)
+            if (focusStatus)
             {
                 _playerControls.Enable();
             }
@@ -108,10 +108,14 @@ public class PlayerInputManager : MonoBehaviour
             MoveAmount = 1;
         }
 
-        if(playerManager == null)
+        if (playerManager == null)
             return;
-            
-        playerManager.playerAnimatorManager.UpdateAnimatorMovementParameters(0, MoveAmount);
+
+        EventSystem.LocomotionAction?.Invoke(playerManager.networkID, VerticalInput, HorizontalInput, MoveAmount);
+        //playerManager.playerAnimatorManager.UpdateAnimatorMovementParameters(0, MoveAmount);
+
+        EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(playerManager.networkID, "Horizontal", 0);
+        EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(playerManager.networkID, "Vertical", MoveAmount);
 
         //HORIZONTAL WILL USE WHEN LOCKED ON
     }
