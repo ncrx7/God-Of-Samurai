@@ -21,14 +21,19 @@ public class PlayerInputManager : MonoBehaviour
     public float CameraVerticalInput { get; private set; }
     public float CameraHorizontalInput { get; private set; }
 
+    [Header("Player Actions Input")]
+    public bool dodgeInput = false;
+
     private void OnEnable()
     {
         if (_playerControls == null)
         {
             _playerControls = new NewControls();
-
+            
+            //BU EVENTE HANDLE MOVEMENT FONKSİYONU ENTEGRE EDİLİRSE DAHA İYİ OPTİMİZE EDİLİR
             _playerControls.PlayerMovement.Movement.performed += i => _movementInput = i.ReadValue<Vector2>();
             _playerControls.PlayerCamera.Movement.performed += i => _cameraMovementInput = i.ReadValue<Vector2>();
+            _playerControls.PlayerActions.Dodge.performed += i => dodgeInput = true;
         }
 
         _playerControls.Enable();
@@ -112,8 +117,8 @@ public class PlayerInputManager : MonoBehaviour
             return;
 
         EventSystem.LocomotionAction?.Invoke(playerManager.networkID, VerticalInput, HorizontalInput, MoveAmount);
-        //playerManager.playerAnimatorManager.UpdateAnimatorMovementParameters(0, MoveAmount);
 
+        //playerManager.playerAnimatorManager.UpdateAnimatorMovementParameters(0, MoveAmount);
         EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(playerManager.networkID, "Horizontal", 0);
         EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(playerManager.networkID, "Vertical", MoveAmount);
 
@@ -126,5 +131,12 @@ public class PlayerInputManager : MonoBehaviour
         CameraHorizontalInput = _cameraMovementInput.x;
     }
 
+    private void HandleDodgeInput()
+    {
+        if(dodgeInput)
+        {
+            dodgeInput = false;
 
+        }
+    }
 }

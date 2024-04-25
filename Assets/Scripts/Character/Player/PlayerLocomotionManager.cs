@@ -5,16 +5,21 @@ using UnityEngine;
 
 public class PlayerLocomotionManager : CharacterLocomotionManager
 {
+    [SerializeField] private PlayerManager _playerManager;
     private float _verticalMovement;
     private float _horizontalMovement;
     private float _moveAmount;
 
-    private Vector3 _moveDirection;
+
+    [Header("Movement Settings")]
     private Vector3 _targetRotationDireciton;
+    private Vector3 _moveDirection;
     [SerializeField] private float _runningSpeed = 5;
     [SerializeField] private float _walkingSpeed = 3;
     [SerializeField] private float _rotationSpeed = 15;
-    [SerializeField] private PlayerManager _playerManager;
+
+    [Header("Dodge Settings")]
+    private Vector3 _rollDirection;
 
     protected override void Awake()
     {
@@ -112,6 +117,27 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
             Quaternion targetRotation = Quaternion.LookRotation(_targetRotationDireciton);
             Quaternion rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
             transform.rotation = rotation;
+        }
+    }
+
+    private void HandleDodge()
+    {
+        if (PlayerInputManager.Instance.MoveAmount > 0)
+        {
+            _rollDirection = PlayerCamera.Instance.CameraObject.transform.forward * PlayerInputManager.Instance.VerticalInput;
+            _rollDirection += PlayerCamera.Instance.CameraObject.transform.right * PlayerInputManager.Instance.HorizontalInput;
+            _rollDirection.y = 0;
+            _rollDirection.Normalize();
+
+            Quaternion playerRotation = Quaternion.LookRotation(_rollDirection);
+            _playerManager.transform.rotation = playerRotation;
+
+            //ROLL ANIMATION
+            EventSystem.PlayTargetAnimationAction?.Invoke("", true, true);
+        }
+        else
+        {
+            //BACKSTEP ANIMATION
         }
     }
 }

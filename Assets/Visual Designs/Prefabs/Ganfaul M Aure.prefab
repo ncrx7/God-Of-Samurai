@@ -2112,6 +2112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9995aaeba1594447a87e3edca5b331a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _characterManager: {fileID: 1750095851261949932}
   animator: {fileID: 5144083956852261932}
 --- !u!114 &-5319059843077935822
 MonoBehaviour:
@@ -2170,6 +2171,7 @@ MonoBehaviour:
   characterNetworkManager: {fileID: 0}
   networkObject: {fileID: 0}
   networkID: 0
+  isPerformingAction: 0
 --- !u!114 &-9095660576776416924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2182,10 +2184,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8fbdc607eea92e43bcff2da61763d4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerManager: {fileID: 1750095851261949932}
   _runningSpeed: 5
   _walkingSpeed: 3
   _rotationSpeed: 15
-  _playerManager: {fileID: 1750095851261949932}
 --- !u!143 &2509677951764323108
 CharacterController:
   m_ObjectHideFlags: 0

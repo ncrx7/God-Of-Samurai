@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CharacterAnimatorManager : MonoBehaviour
 {
-    //[SerializeField] CharacterManager _characterManager;
+    [SerializeField] CharacterManager _characterManager;
     public Animator animator;
 
     float vertical;
@@ -18,11 +18,13 @@ public class CharacterAnimatorManager : MonoBehaviour
     protected virtual void OnEnable()
     {
         EventSystem.UpdateFloatAnimatorParameterAction += UpdateFloatAnimatorParameter;
+        EventSystem.PlayTargetAnimationAction += PlayTargetAnimation;
     }
 
     protected virtual void OnDisable()
     {
        EventSystem.UpdateFloatAnimatorParameterAction -= UpdateFloatAnimatorParameter; 
+       EventSystem.PlayTargetAnimationAction -= PlayTargetAnimation;
     }
 
     public void UpdateAnimatorMovementParameters(float horizontalValue, float verticalValue)
@@ -90,7 +92,7 @@ public class CharacterAnimatorManager : MonoBehaviour
         Debug.Log("id :" + id);
         if (id == GetComponent<PlayerManager>().networkID)
         {
-            animator.SetFloat(parameterName, value, 0.1f, Time.deltaTime);
+            animator.SetFloat(parameterName, value, 0.5f, Time.deltaTime);
     
         }
         else
@@ -98,4 +100,11 @@ public class CharacterAnimatorManager : MonoBehaviour
             Debug.Log("ID NOT MATHCED");
         }
     }
+
+    public virtual void PlayTargetAnimation(string targetAnimation, bool isPerformingAction, bool applyRootMotion = true)
+    {
+        animator.applyRootMotion = applyRootMotion;
+        animator.CrossFade(targetAnimation, 0.2f);
+        _characterManager.isPerformingAction = isPerformingAction;
+    } 
 }

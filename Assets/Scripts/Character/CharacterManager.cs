@@ -9,9 +9,13 @@ public class CharacterManager : NetworkBehaviour
     public CharacterNetworkManager characterNetworkManager;
     public NetworkObject networkObject;
     public ulong networkID;
+
+    [Header("Character Flags")]
+    public bool isPerformingAction = false;
     //public Animator animator;
     protected virtual void Awake()
     {
+        //EDITOR'DEN SERIALIZE EDILIRSE DAHA OPTIMIZE OLUR
         DontDestroyOnLoad(this);
         characterController = GetComponent<CharacterController>();
         characterNetworkManager = GetComponent<CharacterNetworkManager>();
