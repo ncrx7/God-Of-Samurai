@@ -6,30 +6,32 @@ using Unity.Netcode;
 public class CharacterManager : NetworkBehaviour
 {
     public CharacterController characterController;
-    CharacterNetworkManager _characterNetworkManager;
+    public CharacterNetworkManager characterNetworkManager;
+    public Animator animator;
     protected virtual void Awake()
     {
         DontDestroyOnLoad(this);
         characterController = GetComponent<CharacterController>();
-        _characterNetworkManager = GetComponent<CharacterNetworkManager>();
+        characterNetworkManager = GetComponent<CharacterNetworkManager>();
+        animator = GetComponent<Animator>();
     }
 
     protected virtual void Update()
     {
         if(IsOwner) // If local character (our character)
         {
-            _characterNetworkManager.networkPosition.Value = transform.position;
-            _characterNetworkManager.networkRotation.Value = transform.rotation;
+            characterNetworkManager.networkPosition.Value = transform.position;
+            characterNetworkManager.networkRotation.Value = transform.rotation;
         }
         else // If network character who came from network (other character)
         {
             transform.position = Vector3.SmoothDamp(transform.position,
-             _characterNetworkManager.networkPosition.Value, 
-             ref _characterNetworkManager.NetworkPositionVelocity, 
-             _characterNetworkManager.NetworkPositionSmoothTime);
+             characterNetworkManager.networkPosition.Value, 
+             ref characterNetworkManager.NetworkPositionVelocity, 
+             characterNetworkManager.NetworkPositionSmoothTime);
 
              transform.rotation = Quaternion.Slerp
-             (transform.rotation, _characterNetworkManager.networkRotation.Value, _characterNetworkManager.NetworkRotationSmoothTime);
+             (transform.rotation, characterNetworkManager.networkRotation.Value, characterNetworkManager.NetworkRotationSmoothTime);
         }
     }
 

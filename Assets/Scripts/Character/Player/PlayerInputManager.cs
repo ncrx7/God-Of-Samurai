@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class PlayerInputManager : MonoBehaviour
 {
     public static PlayerInputManager Instance { get; private set; }
+
+    public PlayerManager playerManager;
     private NewControls _playerControls;
 
     [Header("Player Movement fields")]
@@ -75,6 +77,7 @@ public class PlayerInputManager : MonoBehaviour
             }
         }
     }
+    //DISABLES WHEN MAIN MENU, ACTIVES WHEN ACCES GAME SCENE
     private void OnSceneChanged(Scene oldScene, Scene newScene)
     {
         // Player controls doesn't work on main menu thanks to here
@@ -104,6 +107,13 @@ public class PlayerInputManager : MonoBehaviour
         {
             MoveAmount = 1;
         }
+
+        if(playerManager == null)
+            return;
+            
+        playerManager.playerAnimatorManager.UpdateAnimatorMovementParameters(0, MoveAmount);
+
+        //HORIZONTAL WILL USE WHEN LOCKED ON
     }
 
     private void HandleCameraMovementInput()

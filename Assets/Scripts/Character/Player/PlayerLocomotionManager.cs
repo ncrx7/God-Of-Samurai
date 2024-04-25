@@ -20,21 +20,43 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         base.Awake();
     }
 
+    protected override void Update()
+    {
+        base.Update();
+
+        if (_playerManager.IsOwner)
+        {
+            _playerManager.characterNetworkManager.animatorVerticalValue.Value = _verticalMovement;
+            _playerManager.characterNetworkManager.animatorHorizontalValue.Value = _horizontalMovement;
+            _playerManager.characterNetworkManager.networkMoveAmount.Value = _moveAmount;
+        }
+        else
+        {
+            _verticalMovement = _playerManager.characterNetworkManager.animatorVerticalValue.Value;
+            _horizontalMovement =  _playerManager.characterNetworkManager.animatorHorizontalValue.Value;
+            _moveAmount = _playerManager.characterNetworkManager.networkMoveAmount.Value;
+
+            _playerManager.playerAnimatorManager.UpdateAnimatorMovementParameters(0, _moveAmount);
+
+            //HORIZONTAL WILL USE WHEN LOCKED ON
+        }
+    }
     public void HandleAllMovement()
     {
         HandleGroundedMovement();
         HandleRotation();
     }
 
-    private void GetHorizontalAndVerticalInputs()
+    private void GetMovementValues()
     {
         _verticalMovement = PlayerInputManager.Instance.VerticalInput;
         _horizontalMovement = PlayerInputManager.Instance.HorizontalInput;
+        _moveAmount = PlayerInputManager.Instance.MoveAmount;
     }
 
     private void HandleGroundedMovement()
     {
-        GetHorizontalAndVerticalInputs();
+        GetMovementValues();
 
         _moveDirection = PlayerCamera.Instance.transform.forward * _verticalMovement;
         _moveDirection += PlayerCamera.Instance.transform.right * _horizontalMovement;
@@ -59,7 +81,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         _targetRotationDireciton.Normalize();
         _targetRotationDireciton.y = 0;
 
-        if(_targetRotationDireciton == Vector3.zero)
+        if (_targetRotationDireciton == Vector3.zero)
         {
             _targetRotationDireciton = transform.forward;
         }

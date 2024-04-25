@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerManager : CharacterManager
 {
+    public PlayerAnimatorManager playerAnimatorManager;
     [SerializeField] PlayerLocomotionManager _playerLocomotionManager;
     protected override void Awake()
     {
@@ -36,6 +37,7 @@ public class PlayerManager : CharacterManager
         if(IsOwner)
         {
             PlayerCamera.Instance.playerManager = this;
+            PlayerInputManager.Instance.playerManager = this;
         }
     }
 }
