@@ -30,11 +30,13 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
     {
         EventSystem.LocomotionAction += HandleGroundedMovement;
         EventSystem.LocomotionAction += HandleRotation;
+        EventSystem.DodgeAction += HandleDodge;
     }
     private void OnDisable()
     {
         EventSystem.LocomotionAction -= HandleGroundedMovement;
         EventSystem.LocomotionAction -= HandleRotation;
+        EventSystem.DodgeAction -= HandleDodge;
     }
 
     protected override void Update()
@@ -79,6 +81,9 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         //GetMovementValues();
         if (id == _playerManager.networkID)
         {
+            if (!_playerManager.canMove)
+                return;
+
             _verticalMovement = verticalMovement;
             _horizontalMovement = horizontalMovement;
             _moveAmount = moveAmount;
@@ -103,6 +108,9 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
     {
         if (id == _playerManager.networkID)
         {
+            if (!_playerManager.canRotate)
+                return;
+
             _targetRotationDireciton = Vector3.zero;
             _targetRotationDireciton = PlayerCamera.Instance.CameraObject.transform.forward * _verticalMovement;
             _targetRotationDireciton += PlayerCamera.Instance.CameraObject.transform.right * _horizontalMovement;
@@ -120,24 +128,32 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         }
     }
 
-    private void HandleDodge()
+    private void HandleDodge(ulong id)
     {
-        if (PlayerInputManager.Instance.MoveAmount > 0)
+        if (id == _playerManager.networkID)
         {
-            _rollDirection = PlayerCamera.Instance.CameraObject.transform.forward * PlayerInputManager.Instance.VerticalInput;
-            _rollDirection += PlayerCamera.Instance.CameraObject.transform.right * PlayerInputManager.Instance.HorizontalInput;
-            _rollDirection.y = 0;
-            _rollDirection.Normalize();
 
-            Quaternion playerRotation = Quaternion.LookRotation(_rollDirection);
-            _playerManager.transform.rotation = playerRotation;
+            if(_playerManager.isPerformingAction)
+                return;
 
-            //ROLL ANIMATION
-            EventSystem.PlayTargetAnimationAction?.Invoke("", true, true);
-        }
-        else
-        {
-            //BACKSTEP ANIMATION
+            if (PlayerInputManager.Instance.MoveAmount > 0)
+            {
+                _rollDirection = PlayerCamera.Instance.CameraObject.transform.forward * PlayerInputManager.Instance.VerticalInput;
+                _rollDirection += PlayerCamera.Instance.CameraObject.transform.right * PlayerInputManager.Instance.HorizontalInput;
+                _rollDirection.y = 0;
+                _rollDirection.Normalize();
+
+                Quaternion playerRotation = Quaternion.LookRotation(_rollDirection);
+                _playerManager.transform.rotation = playerRotation;
+
+                //ROLL ANIMATION
+                EventSystem.PlayTargetAnimationAction?.Invoke(_playerManager.networkID, "Roll_Forward_01", true, false, false, true);
+            }
+            else
+            {
+                //BACKSTEP ANIMATION
+                EventSystem.PlayTargetAnimationAction?.Invoke(_playerManager.networkID, "Back_Step_01", true, false, false, true);
+            }
         }
     }
 }

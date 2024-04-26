@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+//using Unity.Netcode;
 
 public class CharacterAnimatorManager : MonoBehaviour
 {
@@ -23,8 +25,8 @@ public class CharacterAnimatorManager : MonoBehaviour
 
     protected virtual void OnDisable()
     {
-       EventSystem.UpdateFloatAnimatorParameterAction -= UpdateFloatAnimatorParameter; 
-       EventSystem.PlayTargetAnimationAction -= PlayTargetAnimation;
+        EventSystem.UpdateFloatAnimatorParameterAction -= UpdateFloatAnimatorParameter;
+        EventSystem.PlayTargetAnimationAction -= PlayTargetAnimation;
     }
 
     public void UpdateAnimatorMovementParameters(float horizontalValue, float verticalValue)
@@ -93,7 +95,7 @@ public class CharacterAnimatorManager : MonoBehaviour
         if (id == GetComponent<PlayerManager>().networkID)
         {
             animator.SetFloat(parameterName, value, 0.5f, Time.deltaTime);
-    
+
         }
         else
         {
@@ -101,10 +103,18 @@ public class CharacterAnimatorManager : MonoBehaviour
         }
     }
 
-    public virtual void PlayTargetAnimation(string targetAnimation, bool isPerformingAction, bool applyRootMotion = true)
+    public virtual void PlayTargetAnimation(ulong id, string targetAnimation, bool isPerformingAction, bool canRotate = false, bool canMove = false, bool applyRootMotion = true)
     {
-        animator.applyRootMotion = applyRootMotion;
-        animator.CrossFade(targetAnimation, 0.2f);
-        _characterManager.isPerformingAction = isPerformingAction;
-    } 
+        if (id == GetComponent<PlayerManager>().networkID)
+        {
+
+            _characterManager.applyRootMotion = applyRootMotion;
+            animator.CrossFade(targetAnimation, 0.2f);
+            _characterManager.isPerformingAction = isPerformingAction;
+            _characterManager.canMove = canMove;
+            _characterManager.canRotate = canRotate;
+
+            _characterManager.characterNetworkManager.NotiftTheServerOfActionAnimationServerRPC(NetworkManager.Singleton.LocalClientId, targetAnimation, applyRootMotion);
+        }
+    }
 }

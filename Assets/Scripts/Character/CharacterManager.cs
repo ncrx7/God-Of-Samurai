@@ -12,6 +12,10 @@ public class CharacterManager : NetworkBehaviour
 
     [Header("Character Flags")]
     public bool isPerformingAction = false;
+    public bool canRotate = true;
+    public bool canMove = true;
+    public bool applyRootMotion = false;
+
     //public Animator animator;
     protected virtual void Awake()
     {

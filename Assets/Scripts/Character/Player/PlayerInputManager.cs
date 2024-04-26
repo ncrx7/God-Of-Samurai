@@ -67,6 +67,7 @@ public class PlayerInputManager : MonoBehaviour
     {
         HandleMovementInput();
         HandleCameraMovementInput();
+        HandleDodgeInput();
     }
     private void OnApplicationFocus(bool focusStatus)
     {
@@ -136,7 +137,7 @@ public class PlayerInputManager : MonoBehaviour
         if(dodgeInput)
         {
             dodgeInput = false;
-
+            EventSystem.DodgeAction?.Invoke(playerManager.networkID);
         }
     }
 }

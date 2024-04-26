@@ -10,7 +10,7 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] Transform _cameraPivotTransform;
 
     [Header("Camera Settings")]
-    private float _cameraSmoothSpeed = 100;
+    [SerializeField] private float _cameraSmoothSpeed = 100;
     [SerializeField] float _leftAndRightRotationSpeed = 220;
     [SerializeField] float _upAndDownRotationSpeed = 220;
     [SerializeField] float _minimumPivot = -30;
