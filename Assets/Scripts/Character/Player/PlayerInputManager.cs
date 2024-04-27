@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class PlayerInputManager : MonoBehaviour
@@ -23,17 +24,22 @@ public class PlayerInputManager : MonoBehaviour
 
     [Header("Player Actions Input")]
     public bool dodgeInput = false;
+    public bool sprintInput = false;
 
     private void OnEnable()
     {
         if (_playerControls == null)
         {
             _playerControls = new NewControls();
-            
+
             //BU EVENTE HANDLE MOVEMENT FONKSİYONU ENTEGRE EDİLİRSE DAHA İYİ OPTİMİZE EDİLİR
             _playerControls.PlayerMovement.Movement.performed += i => _movementInput = i.ReadValue<Vector2>();
             _playerControls.PlayerCamera.Movement.performed += i => _cameraMovementInput = i.ReadValue<Vector2>();
             _playerControls.PlayerActions.Dodge.performed += i => dodgeInput = true;
+
+            //HOLDING ACTIONS
+            _playerControls.PlayerActions.Sprint.performed += i => sprintInput = true;
+            _playerControls.PlayerActions.Sprint.canceled += i => sprintInput = false;
         }
 
         _playerControls.Enable();
@@ -68,6 +74,7 @@ public class PlayerInputManager : MonoBehaviour
         HandleMovementInput();
         HandleCameraMovementInput();
         HandleDodgeInput();
+        HandleSprintInput();
     }
     private void OnApplicationFocus(bool focusStatus)
     {
@@ -117,11 +124,18 @@ public class PlayerInputManager : MonoBehaviour
         if (playerManager == null)
             return;
 
-        EventSystem.LocomotionAction?.Invoke(playerManager.networkID, VerticalInput, HorizontalInput, MoveAmount);
+        EventSystem.MovementLocomotionAction?.Invoke(playerManager.networkID, VerticalInput, HorizontalInput, MoveAmount);
 
         //playerManager.playerAnimatorManager.UpdateAnimatorMovementParameters(0, MoveAmount);
-        EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(playerManager.networkID, "Horizontal", 0);
-        EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(playerManager.networkID, "Vertical", MoveAmount);
+        if (sprintInput)
+        {
+            EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(playerManager.networkID, "Vertical", 2);
+        }
+        else
+        {
+            EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(playerManager.networkID, "Horizontal", 0);
+            EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(playerManager.networkID, "Vertical", MoveAmount);
+        }
 
         //HORIZONTAL WILL USE WHEN LOCKED ON
     }
@@ -134,10 +148,22 @@ public class PlayerInputManager : MonoBehaviour
 
     private void HandleDodgeInput()
     {
-        if(dodgeInput)
+        if (dodgeInput)
         {
             dodgeInput = false;
             EventSystem.DodgeAction?.Invoke(playerManager.networkID);
+        }
+    }
+
+    private void HandleSprintInput()
+    {
+        if (sprintInput)
+        {
+            EventSystem.SprintAction?.Invoke(playerManager.networkID);
+        }
+        else
+        {
+            playerManager.characterNetworkManager.isSprinting.Value = false;
         }
     }
 }

@@ -21,6 +21,9 @@ public class CharacterNetworkManager : NetworkBehaviour
     public NetworkVariable<float> animatorVerticalValue = new NetworkVariable<float>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<float> networkMoveAmount = new NetworkVariable<float>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
+    [Header("Flags")]
+    public NetworkVariable<bool> isSprinting = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner) ;
+
     protected virtual void Awake()
     {
         _characterManager = GetComponent<CharacterManager>();

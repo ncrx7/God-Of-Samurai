@@ -15,7 +15,8 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
     private Vector3 _targetRotationDireciton;
     private Vector3 _moveDirection;
     [SerializeField] private float _runningSpeed = 5;
-    [SerializeField] private float _walkingSpeed = 3;
+    [SerializeField] private float _sprintingSpeed = 7.5f;
+    [SerializeField] private float _walkingSpeed = 2;
     [SerializeField] private float _rotationSpeed = 15;
 
     [Header("Dodge Settings")]
@@ -28,15 +29,17 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
 
     private void OnEnable()
     {
-        EventSystem.LocomotionAction += HandleGroundedMovement;
-        EventSystem.LocomotionAction += HandleRotation;
+        EventSystem.MovementLocomotionAction += HandleGroundedMovement;
+        EventSystem.MovementLocomotionAction += HandleRotation;
         EventSystem.DodgeAction += HandleDodge;
+        EventSystem.SprintAction += HandleSprint;
     }
     private void OnDisable()
     {
-        EventSystem.LocomotionAction -= HandleGroundedMovement;
-        EventSystem.LocomotionAction -= HandleRotation;
+        EventSystem.MovementLocomotionAction -= HandleGroundedMovement;
+        EventSystem.MovementLocomotionAction -= HandleRotation;
         EventSystem.DodgeAction -= HandleDodge;
+        EventSystem.SprintAction -= HandleSprint;
     }
 
     protected override void Update()
@@ -57,9 +60,15 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
 
             //_playerManager.playerAnimatorManager.UpdateAnimatorMovementParameters(0, _moveAmount);
 
-            EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(_playerManager.networkID, "Horizontal", 0);
-            EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(_playerManager.networkID, "Vertical", _moveAmount);
-
+            if(_playerManager.characterNetworkManager.isSprinting.Value)
+            {
+                EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(_playerManager.networkID, "Vertical", 2);
+            }
+            else
+            {
+                EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(_playerManager.networkID, "Horizontal", 0);
+                EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(_playerManager.networkID, "Vertical", _moveAmount);
+            }
             //HORIZONTAL WILL USE WHEN LOCKED ON
         }
     }
@@ -93,13 +102,20 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
             _moveDirection.Normalize();
             _moveDirection.y = 0;
 
-            if (PlayerInputManager.Instance.MoveAmount <= 0.5)
+            if (_playerManager.characterNetworkManager.isSprinting.Value)
             {
-                _playerManager.characterController.Move(_moveDirection * _walkingSpeed * Time.deltaTime);
+                _playerManager.characterController.Move(_moveDirection * _sprintingSpeed * Time.deltaTime);
             }
-            else if (PlayerInputManager.Instance.MoveAmount > 0.5)
+            else
             {
-                _playerManager.characterController.Move(_moveDirection * _runningSpeed * Time.deltaTime);
+                if (PlayerInputManager.Instance.MoveAmount <= 0.5)
+                {
+                    _playerManager.characterController.Move(_moveDirection * _walkingSpeed * Time.deltaTime);
+                }
+                else if (PlayerInputManager.Instance.MoveAmount > 0.5)
+                {
+                    _playerManager.characterController.Move(_moveDirection * _runningSpeed * Time.deltaTime);
+                }
             }
         }
     }
@@ -133,7 +149,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         if (id == _playerManager.networkID)
         {
 
-            if(_playerManager.isPerformingAction)
+            if (_playerManager.isPerformingAction)
                 return;
 
             if (PlayerInputManager.Instance.MoveAmount > 0)
@@ -153,6 +169,26 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
             {
                 //BACKSTEP ANIMATION
                 EventSystem.PlayTargetAnimationAction?.Invoke(_playerManager.networkID, "Back_Step_01", true, false, false, true);
+            }
+        }
+    }
+
+    public void HandleSprint(ulong id)
+    {
+        if (id == _playerManager.networkID)
+        {
+            if (_playerManager.isPerformingAction)
+            {
+                _playerManager.characterNetworkManager.isSprinting.Value = false;
+            }
+
+            if (_moveAmount >= 0)
+            {
+                _playerManager.characterNetworkManager.isSprinting.Value = true;
+            }
+            else
+            {
+                _playerManager.characterNetworkManager.isSprinting.Value = false;
             }
         }
     }
