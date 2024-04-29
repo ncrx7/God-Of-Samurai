@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerManager : CharacterManager
 {
+    [SerializeField] PlayerStatsManager _playerStatsManager;
     //public PlayerAnimatorManager playerAnimatorManager;
     //[SerializeField] PlayerLocomotionManager _playerLocomotionManager;
     protected override void Awake()
@@ -25,6 +26,7 @@ public class PlayerManager : CharacterManager
         }
 
         //_playerLocomotionManager.HandleAllMovement();
+        _playerStatsManager.RegenarateStamina();
     }
 
     protected override void LateUpdate()
@@ -42,6 +44,12 @@ public class PlayerManager : CharacterManager
         {
             PlayerCamera.Instance.playerManager = this;
             PlayerInputManager.Instance.playerManager = this;
+            characterNetworkManager.currentStamina.OnValueChanged += PlayerUIManager.Instance.SetNewStaminaValue;
+            characterNetworkManager.currentStamina.OnValueChanged += _playerStatsManager.ResetStaminaRegenTimer;
+
+            characterNetworkManager.maxStamina.Value = _playerStatsManager.CalculateStaminaBasedOnEnduranceLevel(characterNetworkManager.endurance.Value);
+            characterNetworkManager.currentStamina.Value = _playerStatsManager.CalculateStaminaBasedOnEnduranceLevel(characterNetworkManager.endurance.Value);
+            PlayerUIManager.Instance.SetMaxStaminaValue(characterNetworkManager.maxStamina.Value);
         }
     }
 }

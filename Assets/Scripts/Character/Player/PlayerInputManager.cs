@@ -35,11 +35,13 @@ public class PlayerInputManager : MonoBehaviour
             //BU EVENTE HANDLE MOVEMENT FONKSİYONU ENTEGRE EDİLİRSE DAHA İYİ OPTİMİZE EDİLİR
             _playerControls.PlayerMovement.Movement.performed += i => _movementInput = i.ReadValue<Vector2>();
             _playerControls.PlayerCamera.Movement.performed += i => _cameraMovementInput = i.ReadValue<Vector2>();
-            _playerControls.PlayerActions.Dodge.performed += i => dodgeInput = true;
+
+            //_playerControls.PlayerActions.Dodge.performed += i => dodgeInput = true;
+            _playerControls.PlayerActions.Dodge.performed += HandleDodgeInputOnPressed;
 
             //HOLDING ACTIONS
-            _playerControls.PlayerActions.Sprint.performed += i => sprintInput = true;
-            _playerControls.PlayerActions.Sprint.canceled += i => sprintInput = false;
+            _playerControls.PlayerActions.Sprint.started += HandleSprintingInputOnPressHold;
+            _playerControls.PlayerActions.Sprint.canceled += HandleSprintingInputOnReleased;
         }
 
         _playerControls.Enable();
@@ -74,7 +76,7 @@ public class PlayerInputManager : MonoBehaviour
         HandleMovementInput();
         HandleCameraMovementInput();
         HandleDodgeInput();
-        HandleSprintInput();
+        //HandleSprintInput();
     }
     private void OnApplicationFocus(bool focusStatus)
     {
@@ -155,7 +157,14 @@ public class PlayerInputManager : MonoBehaviour
         }
     }
 
-    private void HandleSprintInput()
+    private void HandleDodgeInputOnPressed(InputAction.CallbackContext callbackContext)
+    {
+        dodgeInput = true;
+        EventSystem.DodgeAction?.Invoke(playerManager.networkID);
+        dodgeInput = false;
+    }
+
+/*     private void HandleSprintInput()
     {
         if (sprintInput)
         {
@@ -165,5 +174,19 @@ public class PlayerInputManager : MonoBehaviour
         {
             playerManager.characterNetworkManager.isSprinting.Value = false;
         }
+    } */
+
+    private void HandleSprintingInputOnPressHold(InputAction.CallbackContext callbackContext)
+    { 
+        sprintInput = true;
+        EventSystem.SprintAction?.Invoke(playerManager.networkID);
+        Debug.Log("pressed sprint");
+    }
+
+    private void HandleSprintingInputOnReleased(InputAction.CallbackContext callbackContext)
+    {
+        sprintInput = false;
+        playerManager.characterNetworkManager.isSprinting.Value = false;
+        Debug.Log("HandleSprintingInputOnReleased worked");
     }
 }

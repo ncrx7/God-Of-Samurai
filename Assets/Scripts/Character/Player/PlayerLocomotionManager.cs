@@ -18,9 +18,12 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
     [SerializeField] private float _sprintingSpeed = 7.5f;
     [SerializeField] private float _walkingSpeed = 2;
     [SerializeField] private float _rotationSpeed = 15;
+    [SerializeField] private int _sprintingStaminaCost = 2;
+
 
     [Header("Dodge Settings")]
     private Vector3 _rollDirection;
+    [SerializeField] float _dodgeStaminaCost = 25;
 
     protected override void Awake()
     {
@@ -45,7 +48,6 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
     protected override void Update()
     {
         base.Update();
-
         if (_playerManager.IsOwner)
         {
             _playerManager.characterNetworkManager.animatorVerticalValue.Value = _verticalMovement;
@@ -60,7 +62,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
 
             //_playerManager.playerAnimatorManager.UpdateAnimatorMovementParameters(0, _moveAmount);
 
-            if(_playerManager.characterNetworkManager.isSprinting.Value)
+            if (_playerManager.characterNetworkManager.isSprinting.Value)
             {
                 EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(_playerManager.networkID, "Vertical", 2);
             }
@@ -71,6 +73,8 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
             }
             //HORIZONTAL WILL USE WHEN LOCKED ON
         }
+
+        UpdateStaminaValueOnSprint();
     }
     public void HandleAllMovement()
     {
@@ -152,6 +156,11 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
             if (_playerManager.isPerformingAction)
                 return;
 
+            if(_playerManager.characterNetworkManager.currentStamina.Value <= 0)
+            {
+                return;
+            }
+
             if (PlayerInputManager.Instance.MoveAmount > 0)
             {
                 _rollDirection = PlayerCamera.Instance.CameraObject.transform.forward * PlayerInputManager.Instance.VerticalInput;
@@ -168,8 +177,15 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
             else
             {
                 //BACKSTEP ANIMATION
+                Vector3 targetPosition = transform.position - (transform.forward * 3f);
+                _playerManager.characterController.enabled = false;
+                transform.position = targetPosition;
+                _playerManager.characterController.enabled = true;
+                //_playerManager.characterController.Move(-transform.forward * 1f);
                 EventSystem.PlayTargetAnimationAction?.Invoke(_playerManager.networkID, "Back_Step_01", true, false, false, true);
             }
+
+            _playerManager.characterNetworkManager.currentStamina.Value -= _dodgeStaminaCost;
         }
     }
 
@@ -182,6 +198,12 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
                 _playerManager.characterNetworkManager.isSprinting.Value = false;
             }
 
+            if (_playerManager.characterNetworkManager.currentStamina.Value <= 0)
+            {
+                _playerManager.characterNetworkManager.isSprinting.Value = false;
+                return;
+            }
+
             if (_moveAmount >= 0)
             {
                 _playerManager.characterNetworkManager.isSprinting.Value = true;
@@ -190,6 +212,15 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
             {
                 _playerManager.characterNetworkManager.isSprinting.Value = false;
             }
+        }
+    }
+
+    private void UpdateStaminaValueOnSprint()
+    {
+        if (_playerManager.characterNetworkManager.isSprinting.Value)
+        {
+            _playerManager.characterNetworkManager.currentStamina.Value -= _sprintingStaminaCost * Time.deltaTime;
+            Debug.Log("current stamina" + _playerManager.characterNetworkManager.currentStamina.Value);
         }
     }
 }

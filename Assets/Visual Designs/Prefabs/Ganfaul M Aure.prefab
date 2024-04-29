@@ -2053,6 +2053,7 @@ GameObject:
   - component: {fileID: -5319059843077935822}
   - component: {fileID: 5559617836657612189}
   - component: {fileID: 1750095851261949932}
+  - component: {fileID: 2378055862364091240}
   - component: {fileID: -9095660576776416924}
   - component: {fileID: 2330533734024482451}
   - component: {fileID: 2509677951764323108}
@@ -2157,6 +2158,14 @@ MonoBehaviour:
     m_InternalValue: 0
   networkMoveAmount:
     m_InternalValue: 0
+  isSprinting:
+    m_InternalValue: 0
+  endurance:
+    m_InternalValue: 1
+  currentStamina:
+    m_InternalValue: 0
+  maxStamina:
+    m_InternalValue: 0
 --- !u!114 &1750095851261949932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2177,6 +2186,22 @@ MonoBehaviour:
   canRotate: 1
   canMove: 1
   applyRootMotion: 0
+  _playerStatsManager: {fileID: 2378055862364091240}
+--- !u!114 &2378055862364091240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5401412305628562371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2747bdc477ec8f42bd5053c0a583aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterManager: {fileID: 1750095851261949932}
+  _staminaRegenarationDelay: 2
+  _staminaRegenerationAmount: 2
 --- !u!114 &-9095660576776416924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2191,8 +2216,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerManager: {fileID: 1750095851261949932}
   _runningSpeed: 5
+  _sprintingSpeed: 7.5
   _walkingSpeed: 3
   _rotationSpeed: 15
+  _sprintingStaminaCost: 2
 --- !u!114 &2330533734024482451
 MonoBehaviour:
   m_ObjectHideFlags: 0

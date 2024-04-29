@@ -16,6 +16,8 @@ public class CharacterManager : NetworkBehaviour
     public bool canMove = true;
     public bool applyRootMotion = false;
 
+
+
     //public Animator animator;
     protected virtual void Awake()
     {
