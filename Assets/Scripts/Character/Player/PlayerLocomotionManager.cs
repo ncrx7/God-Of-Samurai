@@ -91,6 +91,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
 
     private void HandleGroundedMovement(ulong id, float verticalMovement, float horizontalMovement, float moveAmount)
     {
+        Debug.Log("movement working");
         //GetMovementValues();
         if (id == _playerManager.networkID)
         {
@@ -156,7 +157,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
             if (_playerManager.isPerformingAction)
                 return;
 
-            if(_playerManager.characterNetworkManager.currentStamina.Value <= 0)
+            if (_playerManager.characterNetworkManager.currentStamina.Value <= 0)
             {
                 return;
             }
@@ -221,6 +222,12 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         {
             _playerManager.characterNetworkManager.currentStamina.Value -= _sprintingStaminaCost * Time.deltaTime;
             Debug.Log("current stamina" + _playerManager.characterNetworkManager.currentStamina.Value);
+        }
+
+        if (_playerManager.characterNetworkManager.currentStamina.Value <= 0)
+        {
+            _playerManager.characterNetworkManager.isSprinting.Value = false;
+            return;
         }
     }
 }
