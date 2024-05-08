@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UICharacterSaveSlot : MonoBehaviour
 {
@@ -9,10 +10,12 @@ public class UICharacterSaveSlot : MonoBehaviour
     [SerializeField] CharacterSaveSlot _characterSaveSlot;
     [SerializeField] TextMeshProUGUI characterNameText;
     [SerializeField] TextMeshProUGUI _timePlayedText;
+    [SerializeField] Button _deleteButton;
 
     private void OnEnable()
     {
         LoadSaveSlots();
+        _deleteButton.onClick.AddListener(DeleteSaveSlotOnClickButton);
     }
 
     private void LoadSaveSlots()
@@ -36,5 +39,15 @@ public class UICharacterSaveSlot : MonoBehaviour
     {
         WorldSaveGameManager.Instance.currentCharacterSaveSlotBeingUsed = _characterSaveSlot;
         WorldSaveGameManager.Instance.LoadGame();
+    }
+
+    public void DeleteSaveSlotOnClickButton()
+    {
+        TitleScreenManager.Instance.AttemptToDeleteCharacterSlot(_characterSaveSlot);
+    }
+
+    public void SelectCurrentSlot()
+    {
+        TitleScreenManager.Instance.SelectCharacterSlot(_characterSaveSlot);
     }
 }

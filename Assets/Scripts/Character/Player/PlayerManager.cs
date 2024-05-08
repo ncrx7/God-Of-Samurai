@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerManager : CharacterManager
 {
@@ -63,6 +64,7 @@ public class PlayerManager : CharacterManager
         currentSaveObject.xPosition = transform.position.x;
         currentSaveObject.yPosition = transform.position.y;
         currentSaveObject.zPosition = transform.position.z;
+        currentSaveObject.sceneIndex = SceneManager.GetActiveScene().buildIndex;
     }
 
     public void LoadGameDataFromCurrentSaveObject(ref CharacterSaveData currentSaveObject)

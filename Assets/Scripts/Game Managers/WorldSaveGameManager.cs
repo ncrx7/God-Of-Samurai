@@ -75,7 +75,8 @@ public class WorldSaveGameManager : MonoBehaviour
     private void PopulateSavesDictionary()
     {
         savesDictionary.Add(CharacterSaveSlot.CharacterSlot_01, characterSaveSlot01);
-        savesDictionary.Add(CharacterSaveSlot.CharacterSlot_02, characterSaveSlot03);
+        savesDictionary.Add(CharacterSaveSlot.CharacterSlot_02, characterSaveSlot02);
+        savesDictionary.Add(CharacterSaveSlot.CharacterSlot_03, characterSaveSlot03);
         savesDictionary.Add(CharacterSaveSlot.CharacterSlot_04, characterSaveSlot04);
         savesDictionary.Add(CharacterSaveSlot.CharacterSlot_05, characterSaveSlot05);
         savesDictionary.Add(CharacterSaveSlot.CharacterSlot_06, characterSaveSlot06);
@@ -131,7 +132,8 @@ public class WorldSaveGameManager : MonoBehaviour
     {
         _saveFileDataWriter = new SaveFileDataWriter();
 
-        _fileName = DecideCharacterFileName(CharacterSaveSlot.CharacterSlot_01);
+        _saveFileDataWriter.SaveDataDirectoryPath = Application.persistentDataPath;
+        _saveFileDataWriter.SaveFileName = DecideCharacterFileName(CharacterSaveSlot.CharacterSlot_01);
 
         if (!_saveFileDataWriter.CheckToSeeFileExist())
         {
@@ -141,7 +143,7 @@ public class WorldSaveGameManager : MonoBehaviour
             return;
         }
 
-        _fileName = DecideCharacterFileName(CharacterSaveSlot.CharacterSlot_02);
+        _saveFileDataWriter.SaveFileName = DecideCharacterFileName(CharacterSaveSlot.CharacterSlot_02);
 
         if (!_saveFileDataWriter.CheckToSeeFileExist())
         {
@@ -151,8 +153,88 @@ public class WorldSaveGameManager : MonoBehaviour
             return;
         }
 
+        _saveFileDataWriter.SaveFileName = DecideCharacterFileName(CharacterSaveSlot.CharacterSlot_03);
+
+        if (!_saveFileDataWriter.CheckToSeeFileExist())
+        {
+            currentCharacterSaveSlotBeingUsed = CharacterSaveSlot.CharacterSlot_03;
+            currentSaveData = new CharacterSaveData();
+            StartCoroutine(LoadWorldScene());
+            return;
+        }
+
+        _saveFileDataWriter.SaveFileName = DecideCharacterFileName(CharacterSaveSlot.CharacterSlot_04);
+
+        if (!_saveFileDataWriter.CheckToSeeFileExist())
+        {
+            currentCharacterSaveSlotBeingUsed = CharacterSaveSlot.CharacterSlot_04;
+            currentSaveData = new CharacterSaveData();
+            StartCoroutine(LoadWorldScene());
+            return;
+        }
+
+        _saveFileDataWriter.SaveFileName = DecideCharacterFileName(CharacterSaveSlot.CharacterSlot_05);
+
+        if (!_saveFileDataWriter.CheckToSeeFileExist())
+        {
+            currentCharacterSaveSlotBeingUsed = CharacterSaveSlot.CharacterSlot_05;
+            currentSaveData = new CharacterSaveData();
+            StartCoroutine(LoadWorldScene());
+            return;
+        }
+
+        _saveFileDataWriter.SaveFileName = DecideCharacterFileName(CharacterSaveSlot.CharacterSlot_06);
+
+        if (!_saveFileDataWriter.CheckToSeeFileExist())
+        {
+            currentCharacterSaveSlotBeingUsed = CharacterSaveSlot.CharacterSlot_06;
+            currentSaveData = new CharacterSaveData();
+            StartCoroutine(LoadWorldScene());
+            return;
+        }
+
+        _saveFileDataWriter.SaveFileName = DecideCharacterFileName(CharacterSaveSlot.CharacterSlot_07);
+
+        if (!_saveFileDataWriter.CheckToSeeFileExist())
+        {
+            currentCharacterSaveSlotBeingUsed = CharacterSaveSlot.CharacterSlot_07;
+            currentSaveData = new CharacterSaveData();
+            StartCoroutine(LoadWorldScene());
+            return;
+        }
+
+        _saveFileDataWriter.SaveFileName = DecideCharacterFileName(CharacterSaveSlot.CharacterSlot_08);
+
+        if (!_saveFileDataWriter.CheckToSeeFileExist())
+        {
+            currentCharacterSaveSlotBeingUsed = CharacterSaveSlot.CharacterSlot_08;
+            currentSaveData = new CharacterSaveData();
+            StartCoroutine(LoadWorldScene());
+            return;
+        }
+
+        _saveFileDataWriter.SaveFileName = DecideCharacterFileName(CharacterSaveSlot.CharacterSlot_09);
+
+        if (!_saveFileDataWriter.CheckToSeeFileExist())
+        {
+            currentCharacterSaveSlotBeingUsed = CharacterSaveSlot.CharacterSlot_09;
+            currentSaveData = new CharacterSaveData();
+            StartCoroutine(LoadWorldScene());
+            return;
+        }
+
+        _saveFileDataWriter.SaveFileName = DecideCharacterFileName(CharacterSaveSlot.CharacterSlot_10);
+
+        if (!_saveFileDataWriter.CheckToSeeFileExist())
+        {
+            currentCharacterSaveSlotBeingUsed = CharacterSaveSlot.CharacterSlot_10;
+            currentSaveData = new CharacterSaveData();
+            StartCoroutine(LoadWorldScene());
+            return;
+        }
 
 
+        TitleScreenManager.Instance.DisplayNoFreeCharacterSlotsPopUp();
     }
 
     public void LoadGame()
@@ -178,6 +260,16 @@ public class WorldSaveGameManager : MonoBehaviour
         playerManager.SaveGameDataToCurrentSaveObject(ref currentSaveData);
 
         _saveFileDataWriter.CreateNewCharacterSaveFile(currentSaveData);
+    }
+
+    public void DeleteGame(CharacterSaveSlot characterSaveSlot)
+    {
+        _fileName = DecideCharacterFileName(characterSaveSlot);
+
+        _saveFileDataWriter = new SaveFileDataWriter();
+        _saveFileDataWriter.SaveDataDirectoryPath = Application.persistentDataPath;
+        _saveFileDataWriter.SaveFileName = _fileName;
+        _saveFileDataWriter.DeleteSaveFile();
     }
 
     public void LoadAllCharacterSaveProfile()
@@ -221,6 +313,9 @@ public class WorldSaveGameManager : MonoBehaviour
     public IEnumerator LoadWorldScene()
     {
         AsyncOperation loadOperation = SceneManager.LoadSceneAsync(worldSceneIndex);
+
+        //IF we want to load character world index from save file, use this
+        //AsyncOperation loadOperation = SceneManager.LoadSceneAsync(currentSaveData.sceneIndex);
         playerManager.LoadGameDataFromCurrentSaveObject(ref currentSaveData);
         yield return null;
     }
