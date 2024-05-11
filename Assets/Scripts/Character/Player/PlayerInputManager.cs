@@ -25,6 +25,7 @@ public class PlayerInputManager : MonoBehaviour
     [Header("Player Actions Input")]
     public bool dodgeInput = false;
     public bool sprintInput = false;
+    public bool jumpInput = false;
 
     private void OnEnable()
     {
@@ -42,6 +43,8 @@ public class PlayerInputManager : MonoBehaviour
             //HOLDING ACTIONS
             _playerControls.PlayerActions.Sprint.started += HandleSprintingInputOnPressHold;
             _playerControls.PlayerActions.Sprint.canceled += HandleSprintingInputOnReleased;
+
+            _playerControls.PlayerActions.Jump.performed += i => jumpInput = true;
         }
 
         _playerControls.Enable();
@@ -75,7 +78,8 @@ public class PlayerInputManager : MonoBehaviour
     {
         HandleMovementInput();
         HandleCameraMovementInput();
-        HandleDodgeInput();
+        HandleJumpInput();
+        //HandleDodgeInput();
         //HandleSprintInput();
     }
     private void OnApplicationFocus(bool focusStatus)
@@ -131,12 +135,12 @@ public class PlayerInputManager : MonoBehaviour
         //playerManager.playerAnimatorManager.UpdateAnimatorMovementParameters(0, MoveAmount);
         if (sprintInput)
         {
-            EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(playerManager.networkID, "Vertical", 2);
+            EventSystem.UpdateAnimatorParameterAction?.Invoke(playerManager.networkID, AnimatorValueType.FLOAT, "Vertical", 2, false);
         }
         else
         {
-            EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(playerManager.networkID, "Horizontal", 0);
-            EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(playerManager.networkID, "Vertical", MoveAmount);
+            EventSystem.UpdateAnimatorParameterAction?.Invoke(playerManager.networkID, AnimatorValueType.FLOAT, "Horizontal", 0, false);
+            EventSystem.UpdateAnimatorParameterAction?.Invoke(playerManager.networkID, AnimatorValueType.FLOAT, "Vertical", MoveAmount, false);
         }
 
         //HORIZONTAL WILL USE WHEN LOCKED ON
@@ -188,5 +192,14 @@ public class PlayerInputManager : MonoBehaviour
         sprintInput = false;
         playerManager.characterNetworkManager.isSprinting.Value = false;
         Debug.Log("HandleSprintingInputOnReleased worked");
+    }
+
+    private void HandleJumpInput()
+    {
+        if(jumpInput)
+        {
+            jumpInput = false;
+            EventSystem.JumpAction?.Invoke(playerManager.networkID);
+        }
     }
 }

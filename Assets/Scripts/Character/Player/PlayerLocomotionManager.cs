@@ -20,6 +20,13 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
     [SerializeField] private float _rotationSpeed = 15;
     [SerializeField] private int _sprintingStaminaCost = 2;
 
+    [Header("Jump")]
+    [SerializeField] float _jumpStaminaCost = 5;
+    [SerializeField] private float _jumpHeight = 4f;
+    [SerializeField] float _jumpForwardSpeed = 5f;
+    [SerializeField] float _freeFallVelocity = 2;
+    private Vector3 jumpDirection;
+
 
     [Header("Dodge Settings")]
     private Vector3 _rollDirection;
@@ -36,6 +43,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         EventSystem.MovementLocomotionAction += HandleRotation;
         EventSystem.DodgeAction += HandleDodge;
         EventSystem.SprintAction += HandleSprint;
+        EventSystem.JumpAction += HandleJump;
     }
     private void OnDisable()
     {
@@ -43,11 +51,16 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         EventSystem.MovementLocomotionAction -= HandleRotation;
         EventSystem.DodgeAction -= HandleDodge;
         EventSystem.SprintAction -= HandleSprint;
+        EventSystem.JumpAction -= HandleJump;
     }
 
     protected override void Update()
     {
         base.Update();
+
+        HandleJumpingMovement();
+        HandleFreeFallMovement();
+        
         if (_playerManager.IsOwner)
         {
             _playerManager.characterNetworkManager.animatorVerticalValue.Value = _verticalMovement;
@@ -64,12 +77,12 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
 
             if (_playerManager.characterNetworkManager.isSprinting.Value)
             {
-                EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(_playerManager.networkID, "Vertical", 2);
+                EventSystem.UpdateAnimatorParameterAction?.Invoke(_playerManager.networkID, AnimatorValueType.FLOAT, "Vertical", 2, false);
             }
             else
             {
-                EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(_playerManager.networkID, "Horizontal", 0);
-                EventSystem.UpdateFloatAnimatorParameterAction?.Invoke(_playerManager.networkID, "Vertical", _moveAmount);
+                EventSystem.UpdateAnimatorParameterAction?.Invoke(_playerManager.networkID, AnimatorValueType.FLOAT, "Horizontal", 0, false);
+                EventSystem.UpdateAnimatorParameterAction?.Invoke(_playerManager.networkID, AnimatorValueType.FLOAT, "Vertical", _moveAmount, false);
             }
             //HORIZONTAL WILL USE WHEN LOCKED ON
         }
@@ -125,6 +138,27 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         }
     }
 
+    private void HandleJumpingMovement()
+    {
+        if(_playerManager.isJumping)
+        {
+            _playerManager.characterController.Move(jumpDirection * _jumpForwardSpeed * Time.deltaTime);
+        }
+    }
+    
+    private void HandleFreeFallMovement()
+    {
+        if(!_playerManager.isGrounded)
+        {
+            Vector3 freeFallDirection;
+
+            freeFallDirection = PlayerCamera.Instance.transform.forward * _verticalMovement;
+            freeFallDirection += PlayerCamera.Instance.transform.right * _horizontalMovement;
+            freeFallDirection.y = 0;
+
+            _playerManager.characterController.Move(freeFallDirection * _freeFallVelocity * Time.deltaTime);
+        }
+    }
     private void HandleRotation(ulong id, float verticalMovement, float horizontalMovement, float moveAmount)
     {
         if (id == _playerManager.networkID)
@@ -230,4 +264,57 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
             return;
         }
     }
+
+    #region JUMP
+    public void HandleJump(ulong id)
+    {
+        if (id == _playerManager.networkID)
+        {
+            if (_playerManager.isPerformingAction)
+                return;
+
+            if (_playerManager.characterNetworkManager.currentStamina.Value <= 0)
+                return;
+
+            if (_playerManager.isJumping)
+                return;
+
+            if (!_playerManager.isGrounded)
+                return;
+
+
+            EventSystem.PlayTargetAnimationAction?.Invoke(_playerManager.networkID, "Jumping", true, false, false, true);
+
+            _playerManager.isJumping = true;
+
+            _playerManager.characterNetworkManager.currentStamina.Value -= _jumpStaminaCost;
+
+
+            jumpDirection = PlayerCamera.Instance.CameraObject.transform.forward * PlayerInputManager.Instance.VerticalInput;
+            jumpDirection += PlayerCamera.Instance.CameraObject.transform.right * PlayerInputManager.Instance.HorizontalInput;
+            jumpDirection.y = 0;
+
+            if (jumpDirection != Vector3.zero)
+            {
+                if (_playerManager.characterNetworkManager.isSprinting.Value)
+                {
+                    jumpDirection *= 1;
+                }
+                else if (PlayerInputManager.Instance.MoveAmount > 0.5)
+                {
+                    jumpDirection *= 0.5f;
+                }
+                else if (PlayerInputManager.Instance.MoveAmount <= 0.5f)
+                {
+                    jumpDirection *= 0.25f;
+                }
+            }
+        }
+    }
+
+    public void ApplyJumpingVelocity()
+    {
+        yVelocity.y = Mathf.Sqrt(_jumpHeight * -2 * gravityForce);
+    }
+    #endregion
 }

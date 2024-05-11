@@ -21,3 +21,10 @@ public enum CharacterSaveSlot
     CharacterSlot_10,
     NO_SLOT
 }
+
+public enum AnimatorValueType
+{
+    FLOAT,
+    BOOL,
+    INT
+}

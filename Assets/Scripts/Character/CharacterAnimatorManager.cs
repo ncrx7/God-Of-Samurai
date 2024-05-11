@@ -19,13 +19,13 @@ public class CharacterAnimatorManager : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-        EventSystem.UpdateFloatAnimatorParameterAction += UpdateFloatAnimatorParameter;
+        EventSystem.UpdateAnimatorParameterAction += UpdateAnimatorParameter;
         EventSystem.PlayTargetAnimationAction += PlayTargetAnimation;
     }
 
     protected virtual void OnDisable()
     {
-        EventSystem.UpdateFloatAnimatorParameterAction -= UpdateFloatAnimatorParameter;
+        EventSystem.UpdateAnimatorParameterAction -= UpdateAnimatorParameter;
         EventSystem.PlayTargetAnimationAction -= PlayTargetAnimation;
     }
 
@@ -89,12 +89,21 @@ public class CharacterAnimatorManager : MonoBehaviour
                 _characterManager.animator.SetFloat("Vertical", snappedVertical); */
     }
 
-    private void UpdateFloatAnimatorParameter(ulong id, string parameterName, float value)
+    private void UpdateAnimatorParameter(ulong id, AnimatorValueType animatorValueType, string parameterName, float floatValue, bool boolValue)
     {
         Debug.Log("id :" + id);
         if (id == GetComponent<PlayerManager>().networkID)
         {
-            animator.SetFloat(parameterName, value, 0.5f, Time.deltaTime);
+            
+            switch (animatorValueType)
+            {
+                case AnimatorValueType.FLOAT:
+                    animator.SetFloat(parameterName, floatValue, 0.5f, Time.deltaTime);
+                    break;
+                case AnimatorValueType.BOOL:
+                    animator.SetBool(parameterName, boolValue);
+                    break;
+            }
 
         }
         else
