@@ -2248,10 +2248,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 0}
+  characterLocomotionManager: {fileID: 0}
   characterNetworkManager: {fileID: 0}
   networkObject: {fileID: 0}
   networkID: 0
   isPerformingAction: 0
+  isRunning: 0
   isJumping: 0
   isGrounded: 1
   canRotate: 1
@@ -2296,12 +2298,15 @@ MonoBehaviour:
   fallStartVelocity: -5
   _playerManager: {fileID: 1750095851261949932}
   _runningSpeed: 5
-  _sprintingSpeed: 7.5
+  _sprintingSpeed: 10
   _walkingSpeed: 3
   _rotationSpeed: 15
   _sprintingStaminaCost: 2
-  _dodgeStaminaCost: 25
   _jumpStaminaCost: 5
+  _jumpHeight: 4
+  _jumpForwardSpeed: 5
+  _freeFallVelocity: 2
+  _dodgeStaminaCost: 25
 --- !u!114 &2330533734024482451
 MonoBehaviour:
   m_ObjectHideFlags: 0

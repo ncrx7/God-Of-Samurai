@@ -5,13 +5,16 @@ using Unity.Netcode;
 
 public class CharacterManager : NetworkBehaviour
 {
+    private IState currentState;
     public CharacterController characterController;
+    public CharacterLocomotionManager characterLocomotionManager;
     public CharacterNetworkManager characterNetworkManager;
     public NetworkObject networkObject;
     public ulong networkID;
 
     [Header("Character Flags")]
     public bool isPerformingAction = false;
+    public bool isRunning = false;
     public bool isJumping = false;
     public bool isGrounded = true;
     public bool canRotate = true;
@@ -34,12 +37,15 @@ public class CharacterManager : NetworkBehaviour
     protected virtual void Start()
     {
         networkID = networkObject.NetworkObjectId;
+        ChangeState(new IdleState());
         Debug.Log("network ıd of char: " + networkID);
     }
 
     protected virtual void Update()
     {
         EventSystem.UpdateAnimatorParameterAction?.Invoke(networkID, AnimatorValueType.BOOL, "isGrounded", 0, isGrounded);
+        currentState.UpdateState(this);
+
         if (IsOwner) // If local character (our character)
         {
             characterNetworkManager.networkPosition.Value = transform.position;
@@ -60,5 +66,12 @@ public class CharacterManager : NetworkBehaviour
     protected virtual void LateUpdate()
     {
 
+    }
+
+    public void ChangeState(IState newState)
+    {
+        currentState?.ExitState(this);
+        currentState = newState;
+        currentState.EnterState(this);
     }
 }

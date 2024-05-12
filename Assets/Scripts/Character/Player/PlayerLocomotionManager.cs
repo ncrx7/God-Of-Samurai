@@ -39,16 +39,20 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
 
     private void OnEnable()
     {
-        EventSystem.MovementLocomotionAction += HandleGroundedMovement;
-        EventSystem.MovementLocomotionAction += HandleRotation;
+        EventSystem.MovementLocomotionActionOnGround += HandleGroundedMovement;
+        EventSystem.MovementLocomotionActionOnGround += HandleRotation;
+        EventSystem.MovementLocomotionActionOnAir += HandleJumpingMovement;
+        EventSystem.MovementLocomotionActionOnAir += HandleFreeFallMovement;
         EventSystem.DodgeAction += HandleDodge;
         EventSystem.SprintAction += HandleSprint;
         EventSystem.JumpAction += HandleJump;
     }
     private void OnDisable()
     {
-        EventSystem.MovementLocomotionAction -= HandleGroundedMovement;
-        EventSystem.MovementLocomotionAction -= HandleRotation;
+        EventSystem.MovementLocomotionActionOnGround -= HandleGroundedMovement;
+        EventSystem.MovementLocomotionActionOnAir -= HandleJumpingMovement;
+        EventSystem.MovementLocomotionActionOnAir -= HandleFreeFallMovement;
+        EventSystem.MovementLocomotionActionOnGround -= HandleRotation;
         EventSystem.DodgeAction -= HandleDodge;
         EventSystem.SprintAction -= HandleSprint;
         EventSystem.JumpAction -= HandleJump;
@@ -58,9 +62,9 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
     {
         base.Update();
 
-        HandleJumpingMovement();
-        HandleFreeFallMovement();
-        
+        //HandleJumpingMovement();
+        //HandleFreeFallMovement();
+
         if (_playerManager.IsOwner)
         {
             _playerManager.characterNetworkManager.animatorVerticalValue.Value = _verticalMovement;
@@ -102,21 +106,17 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         _moveAmount = PlayerInputManager.Instance.MoveAmount;
     }
 
-    private void HandleGroundedMovement(ulong id, float verticalMovement, float horizontalMovement, float moveAmount)
+    private void HandleGroundedMovement(ulong id)
     {
-        Debug.Log("movement working");
+        // Debug.Log("movement working");
         //GetMovementValues();
         if (id == _playerManager.networkID)
         {
             if (!_playerManager.canMove)
                 return;
 
-            _verticalMovement = verticalMovement;
-            _horizontalMovement = horizontalMovement;
-            _moveAmount = moveAmount;
-
-            _moveDirection = PlayerCamera.Instance.transform.forward * _verticalMovement;
-            _moveDirection += PlayerCamera.Instance.transform.right * _horizontalMovement;
+            _moveDirection = PlayerCamera.Instance.transform.forward * PlayerInputManager.Instance.VerticalInput;
+            _moveDirection += PlayerCamera.Instance.transform.right * PlayerInputManager.Instance.HorizontalInput;
             _moveDirection.Normalize();
             _moveDirection.y = 0;
 
@@ -138,28 +138,34 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         }
     }
 
-    private void HandleJumpingMovement()
+    public void HandleJumpingMovement(ulong id)
     {
-        if(_playerManager.isJumping)
+        if (id == _playerManager.networkID)
         {
-            _playerManager.characterController.Move(jumpDirection * _jumpForwardSpeed * Time.deltaTime);
+            if (_playerManager.isJumping)
+            {
+                _playerManager.characterController.Move(jumpDirection * _jumpForwardSpeed * Time.deltaTime);
+            }
         }
     }
-    
-    private void HandleFreeFallMovement()
+
+    public void HandleFreeFallMovement(ulong id)
     {
-        if(!_playerManager.isGrounded)
+        if (id == _playerManager.networkID)
         {
-            Vector3 freeFallDirection;
+            if (!_playerManager.isGrounded)
+            {
+                Vector3 freeFallDirection;
 
-            freeFallDirection = PlayerCamera.Instance.transform.forward * _verticalMovement;
-            freeFallDirection += PlayerCamera.Instance.transform.right * _horizontalMovement;
-            freeFallDirection.y = 0;
+                freeFallDirection = PlayerCamera.Instance.transform.forward * _verticalMovement;
+                freeFallDirection += PlayerCamera.Instance.transform.right * _horizontalMovement;
+                freeFallDirection.y = 0;
 
-            _playerManager.characterController.Move(freeFallDirection * _freeFallVelocity * Time.deltaTime);
+                _playerManager.characterController.Move(freeFallDirection * _freeFallVelocity * Time.deltaTime);
+            }
         }
     }
-    private void HandleRotation(ulong id, float verticalMovement, float horizontalMovement, float moveAmount)
+    private void HandleRotation(ulong id)
     {
         if (id == _playerManager.networkID)
         {
@@ -167,8 +173,8 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
                 return;
 
             _targetRotationDireciton = Vector3.zero;
-            _targetRotationDireciton = PlayerCamera.Instance.CameraObject.transform.forward * _verticalMovement;
-            _targetRotationDireciton += PlayerCamera.Instance.CameraObject.transform.right * _horizontalMovement;
+            _targetRotationDireciton = PlayerCamera.Instance.CameraObject.transform.forward * PlayerInputManager.Instance.VerticalInput;
+            _targetRotationDireciton += PlayerCamera.Instance.CameraObject.transform.right * PlayerInputManager.Instance.HorizontalInput;
             _targetRotationDireciton.Normalize();
             _targetRotationDireciton.y = 0;
 
@@ -255,7 +261,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         if (_playerManager.characterNetworkManager.isSprinting.Value)
         {
             _playerManager.characterNetworkManager.currentStamina.Value -= _sprintingStaminaCost * Time.deltaTime;
-            Debug.Log("current stamina" + _playerManager.characterNetworkManager.currentStamina.Value);
+            //Debug.Log("current stamina" + _playerManager.characterNetworkManager.currentStamina.Value);
         }
 
         if (_playerManager.characterNetworkManager.currentStamina.Value <= 0)

@@ -6,7 +6,8 @@ using UnityEngine;
 public class EventSystem
 {
     //Genaral Events
-    public static Action<ulong, float, float, float> MovementLocomotionAction;
+    public static Action<ulong> MovementLocomotionActionOnGround;
+    public static Action <ulong> MovementLocomotionActionOnAir;
     public static Action<ulong, AnimatorValueType, string, float, bool> UpdateAnimatorParameterAction;
     public static Action <ulong, string, bool, bool, bool, bool> PlayTargetAnimationAction;
 

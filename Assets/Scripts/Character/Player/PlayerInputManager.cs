@@ -116,7 +116,7 @@ public class PlayerInputManager : MonoBehaviour
         HorizontalInput = _movementInput.x;
 
         MoveAmount = Mathf.Clamp01(Mathf.Abs(VerticalInput) + Mathf.Abs(HorizontalInput));
-        Debug.Log("move amount: " + MoveAmount);
+        //Debug.Log("move amount: " + MoveAmount);
 
         if (MoveAmount <= 0.5 && MoveAmount > 0)
         {
@@ -129,11 +129,11 @@ public class PlayerInputManager : MonoBehaviour
 
         if (playerManager == null)
             return;
-
-        EventSystem.MovementLocomotionAction?.Invoke(playerManager.networkID, VerticalInput, HorizontalInput, MoveAmount);
+        playerManager.isRunning = MoveAmount >= 0.5;
+        //EventSystem.MovementLocomotionAction?.Invoke(playerManager.networkID);
 
         //playerManager.playerAnimatorManager.UpdateAnimatorMovementParameters(0, MoveAmount);
-        if (sprintInput)
+  /*       if (sprintInput)
         {
             EventSystem.UpdateAnimatorParameterAction?.Invoke(playerManager.networkID, AnimatorValueType.FLOAT, "Vertical", 2, false);
         }
@@ -141,7 +141,7 @@ public class PlayerInputManager : MonoBehaviour
         {
             EventSystem.UpdateAnimatorParameterAction?.Invoke(playerManager.networkID, AnimatorValueType.FLOAT, "Horizontal", 0, false);
             EventSystem.UpdateAnimatorParameterAction?.Invoke(playerManager.networkID, AnimatorValueType.FLOAT, "Vertical", MoveAmount, false);
-        }
+        } */
 
         //HORIZONTAL WILL USE WHEN LOCKED ON
     }
@@ -196,9 +196,11 @@ public class PlayerInputManager : MonoBehaviour
 
     private void HandleJumpInput()
     {
+        playerManager.isJumping = true;
         if(jumpInput)
         {
             jumpInput = false;
+            playerManager.isJumping = false;
             EventSystem.JumpAction?.Invoke(playerManager.networkID);
         }
     }

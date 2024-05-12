@@ -91,10 +91,9 @@ public class CharacterAnimatorManager : MonoBehaviour
 
     private void UpdateAnimatorParameter(ulong id, AnimatorValueType animatorValueType, string parameterName, float floatValue, bool boolValue)
     {
-        Debug.Log("id :" + id);
+        //Debug.Log("id :" + id);
         if (id == GetComponent<PlayerManager>().networkID)
         {
-            
             switch (animatorValueType)
             {
                 case AnimatorValueType.FLOAT:

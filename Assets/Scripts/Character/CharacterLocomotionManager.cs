@@ -24,7 +24,7 @@ public class CharacterLocomotionManager : MonoBehaviour
     protected virtual void Update()
     {
         HandleGroundCheck();
-        HandleFall();
+        HandleGravity();
     }
 
     protected void HandleGroundCheck()
@@ -32,7 +32,7 @@ public class CharacterLocomotionManager : MonoBehaviour
         _characterManager.isGrounded = Physics.CheckSphere(_characterManager.transform.position, groundCheckSphereRadius, groundLayer);
     }
 
-    protected void HandleFall()
+    protected void HandleGravity()
     {
         if (_characterManager.isGrounded)
         {
@@ -57,7 +57,7 @@ public class CharacterLocomotionManager : MonoBehaviour
             yVelocity.y += gravityForce * Time.deltaTime;
         }
 
-        Debug.Log("yvelocity: " + yVelocity);
+        //Debug.Log("yvelocity: " + yVelocity);
         _characterManager.characterController.Move(yVelocity * Time.deltaTime);
     }
 
