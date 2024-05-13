@@ -32,7 +32,7 @@ public class RunningState : IState
         {
             characterManager.ChangeState(new IdleState());
         }
-        else if (!characterManager.isGrounded)
+        else if (characterManager.isJumping)
         {
             characterManager.ChangeState(new JumpingState());
         }

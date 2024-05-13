@@ -2248,7 +2248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 0}
-  characterLocomotionManager: {fileID: 0}
+  characterLocomotionManager: {fileID: -9095660576776416924}
   characterNetworkManager: {fileID: 0}
   networkObject: {fileID: 0}
   networkID: 0

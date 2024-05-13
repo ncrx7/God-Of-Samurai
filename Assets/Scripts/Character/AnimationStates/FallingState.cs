@@ -16,6 +16,15 @@ public class FallingState : IState
 
     public void UpdateState(CharacterManager characterManager)
     {
-        throw new System.NotImplementedException();
+        EventSystem.MovementLocomotionActionOnAir?.Invoke(characterManager.networkID);
+
+        if (characterManager.isGrounded && !characterManager.isRunning)
+        {
+            characterManager.ChangeState(new IdleState());
+        }
+        else if (characterManager.isGrounded && characterManager.isRunning)
+        {
+            characterManager.ChangeState(new RunningState());
+        }
     }
 }

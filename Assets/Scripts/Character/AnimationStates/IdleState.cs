@@ -18,7 +18,7 @@ public class IdleState : IState
     {
         EventSystem.UpdateAnimatorParameterAction?.Invoke(characterManager.networkID, AnimatorValueType.FLOAT, "Vertical", 0, false);
 
-        if(!characterManager.isGrounded)
+        if(characterManager.isJumping) //!characterManager.isGrounded
         {
             //JUMP
             characterManager.ChangeState(new JumpingState());

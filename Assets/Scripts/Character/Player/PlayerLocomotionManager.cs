@@ -142,7 +142,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
     {
         if (id == _playerManager.networkID)
         {
-            if (_playerManager.isJumping)
+            if (!_playerManager.isGrounded)
             {
                 _playerManager.characterController.Move(jumpDirection * _jumpForwardSpeed * Time.deltaTime);
             }
@@ -157,8 +157,8 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
             {
                 Vector3 freeFallDirection;
 
-                freeFallDirection = PlayerCamera.Instance.transform.forward * _verticalMovement;
-                freeFallDirection += PlayerCamera.Instance.transform.right * _horizontalMovement;
+                freeFallDirection = PlayerCamera.Instance.transform.forward * PlayerInputManager.Instance.VerticalInput;
+                freeFallDirection += PlayerCamera.Instance.transform.right * PlayerInputManager.Instance.HorizontalInput;
                 freeFallDirection.y = 0;
 
                 _playerManager.characterController.Move(freeFallDirection * _freeFallVelocity * Time.deltaTime);
@@ -274,16 +274,18 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
     #region JUMP
     public void HandleJump(ulong id)
     {
+        Debug.Log("handle jump");
         if (id == _playerManager.networkID)
         {
+            Debug.Log("handle jump inside id if state");
             if (_playerManager.isPerformingAction)
                 return;
 
             if (_playerManager.characterNetworkManager.currentStamina.Value <= 0)
                 return;
 
-            if (_playerManager.isJumping)
-                return;
+/*             if (_playerManager.isJumping)
+                return; */
 
             if (!_playerManager.isGrounded)
                 return;
@@ -291,7 +293,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
 
             EventSystem.PlayTargetAnimationAction?.Invoke(_playerManager.networkID, "Jumping", true, false, false, true);
 
-            _playerManager.isJumping = true;
+            //_playerManager.isJumping = true;
 
             _playerManager.characterNetworkManager.currentStamina.Value -= _jumpStaminaCost;
 
@@ -321,6 +323,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
     public void ApplyJumpingVelocity()
     {
         yVelocity.y = Mathf.Sqrt(_jumpHeight * -2 * gravityForce);
+        
     }
     #endregion
 }

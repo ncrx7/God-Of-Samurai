@@ -7,7 +7,7 @@ public class JumpingState : IState
     public void EnterState(CharacterManager characterManager)
     {
         Debug.Log("Entering Jumping State");
-        //EventSystem.JumpAction?.Invoke(characterManager.networkID);
+        EventSystem.JumpAction?.Invoke(characterManager.networkID);
     }
 
     public void ExitState(CharacterManager characterManager)
@@ -17,16 +17,24 @@ public class JumpingState : IState
 
     public void UpdateState(CharacterManager characterManager)
     {
+        if(!characterManager.isJumping)
+        {
+            characterManager.ChangeState(new FallingState());
+        }
+
+
+
+
         //EventSystem.MovementLocomotionActionOnAir?.Invoke(characterManager.networkID);
 
-        if(characterManager.isGrounded && !characterManager.isRunning)
+/*         if(characterManager.isGrounded && !characterManager.isRunning)
         {
             characterManager.ChangeState(new IdleState());
         }
         else if(characterManager.isGrounded && characterManager.isRunning)
         {
             characterManager.ChangeState(new RunningState());
-        }
+        } */
         
         //if character is grounded ise
         //characterManager.ChangeState(new IdleState());

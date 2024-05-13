@@ -196,12 +196,12 @@ public class PlayerInputManager : MonoBehaviour
 
     private void HandleJumpInput()
     {
-        playerManager.isJumping = true;
         if(jumpInput)
         {
+            if(playerManager.characterNetworkManager.currentStamina.Value > 0)
+                playerManager.isJumping = true;
             jumpInput = false;
-            playerManager.isJumping = false;
-            EventSystem.JumpAction?.Invoke(playerManager.networkID);
+            //EventSystem.JumpAction?.Invoke(playerManager.networkID);
         }
     }
 }

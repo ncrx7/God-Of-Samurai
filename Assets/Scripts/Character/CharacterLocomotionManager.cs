@@ -45,16 +45,17 @@ public class CharacterLocomotionManager : MonoBehaviour
         }
         else
         {
-            if (!_characterManager.isJumping && !fallingVelocityHasBeenSet)
+/*             if (!_characterManager.isJumping && !fallingVelocityHasBeenSet)
             {
                 fallingVelocityHasBeenSet = true;
                 yVelocity.y = fallStartVelocity;
-            }
+            } */
 
             inAirTime += Time.deltaTime;
             EventSystem.UpdateAnimatorParameterAction?.Invoke(_characterManager.networkID, AnimatorValueType.FLOAT, "inAirTimer", inAirTime, false);
 
             yVelocity.y += gravityForce * Time.deltaTime;
+            _characterManager.isJumping = false;
         }
 
         //Debug.Log("yvelocity: " + yVelocity);
