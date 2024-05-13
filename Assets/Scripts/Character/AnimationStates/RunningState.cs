@@ -36,6 +36,10 @@ public class RunningState : IState
         {
             characterManager.ChangeState(new JumpingState());
         }
+        else if(!characterManager.isGrounded)
+        {
+            characterManager.ChangeState(new FallingState());
+        }
 
     }
 }

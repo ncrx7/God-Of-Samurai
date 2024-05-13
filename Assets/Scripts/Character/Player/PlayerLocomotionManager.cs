@@ -291,7 +291,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
                 return;
 
 
-            EventSystem.PlayTargetAnimationAction?.Invoke(_playerManager.networkID, "Jumping", true, false, false, true);
+            EventSystem.PlayTargetAnimationAction?.Invoke(_playerManager.networkID, "JumpingBeginning", true, false, false, true);
 
             //_playerManager.isJumping = true;
 
