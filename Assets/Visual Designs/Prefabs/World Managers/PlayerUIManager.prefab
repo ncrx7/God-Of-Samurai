@@ -87,7 +87,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.41860887, g: 0.8962264, b: 0.2494215, a: 1}
+  m_Color: {r: 0.9389235, g: 1, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -258,6 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdda592f24705074281cccbb3d33f324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _slider: {fileID: 8491384499251493320}
 --- !u!114 &1736071232613652540
 MonoBehaviour:
   m_ObjectHideFlags: 0

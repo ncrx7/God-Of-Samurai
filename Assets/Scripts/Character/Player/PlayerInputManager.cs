@@ -26,6 +26,7 @@ public class PlayerInputManager : MonoBehaviour
     public bool dodgeInput = false;
     public bool sprintInput = false;
     public bool jumpInput = false;
+    public bool attackInput = false;
 
     private void OnEnable()
     {
@@ -39,6 +40,8 @@ public class PlayerInputManager : MonoBehaviour
 
             //_playerControls.PlayerActions.Dodge.performed += i => dodgeInput = true;
             _playerControls.PlayerActions.Dodge.performed += HandleDodgeInputOnPressed;
+
+            _playerControls.PlayerActions.Attack.performed += HandleAttackInput;
 
             //HOLDING ACTIONS
             _playerControls.PlayerActions.Sprint.started += HandleSprintingInputOnPressHold;
@@ -168,6 +171,12 @@ public class PlayerInputManager : MonoBehaviour
         dodgeInput = false;
     }
 
+    private void HandleAttackInput(InputAction.CallbackContext callbackContext)
+    {
+        attackInput = true;
+        playerManager.isAttacking = true;
+    }
+
 /*     private void HandleSprintInput()
     {
         if (sprintInput)
@@ -183,6 +192,7 @@ public class PlayerInputManager : MonoBehaviour
     private void HandleSprintingInputOnPressHold(InputAction.CallbackContext callbackContext)
     { 
         sprintInput = true;
+        playerManager.characterNetworkManager.isSprinting.Value = true;
         EventSystem.SprintAction?.Invoke(playerManager.networkID);
         Debug.Log("pressed sprint");
     }

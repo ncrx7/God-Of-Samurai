@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using System;
 //using Unity.Netcode;
 
 public class CharacterAnimatorManager : MonoBehaviour
@@ -21,12 +22,14 @@ public class CharacterAnimatorManager : MonoBehaviour
     {
         EventSystem.UpdateAnimatorParameterAction += UpdateAnimatorParameter;
         EventSystem.PlayTargetAnimationAction += PlayTargetAnimation;
+        EventSystem.SetAnimationSpeedAction += SetAnimationSpeed;
     }
 
     protected virtual void OnDisable()
     {
         EventSystem.UpdateAnimatorParameterAction -= UpdateAnimatorParameter;
         EventSystem.PlayTargetAnimationAction -= PlayTargetAnimation;
+        EventSystem.SetAnimationSpeedAction -= SetAnimationSpeed;
     }
 
     public void UpdateAnimatorMovementParameters(float horizontalValue, float verticalValue)
@@ -98,16 +101,16 @@ public class CharacterAnimatorManager : MonoBehaviour
             {
                 case AnimatorValueType.FLOAT:
                     animator.SetFloat(parameterName, floatValue, 0.5f, Time.deltaTime);
+                    if (!_characterManager.IsOwner)
+                    {
+                        Debug.Log("float value from client :" + floatValue);
+                    }
                     break;
                 case AnimatorValueType.BOOL:
                     animator.SetBool(parameterName, boolValue);
                     break;
             }
 
-        }
-        else
-        {
-            Debug.Log("ID NOT MATHCED");
         }
     }
 
@@ -124,5 +127,25 @@ public class CharacterAnimatorManager : MonoBehaviour
 
             _characterManager.characterNetworkManager.NotiftTheServerOfActionAnimationServerRPC(NetworkManager.Singleton.LocalClientId, targetAnimation, applyRootMotion);
         }
+    }
+
+    public virtual void SetAnimationSpeed(ulong id, string[] animationNames, float speed)
+    {
+        if( id != GetComponent<PlayerManager>().networkID)
+            return;
+
+        AnimatorOverrideController overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+        AnimationClip[] clips = overrideController.animationClips;
+
+        foreach (var clip in clips)
+        {
+            if (Array.Exists(animationNames, element => element == clip.name))
+            {
+                clip.frameRate = speed;
+                break;
+            }
+        }
+
+        animator.runtimeAnimatorController = overrideController;
     }
 }

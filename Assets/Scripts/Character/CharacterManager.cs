@@ -14,6 +14,7 @@ public class CharacterManager : NetworkBehaviour
 
     [Header("Character Flags")]
     public bool isPerformingAction = false;
+    public bool isAttacking = false;
     public bool isRunning = false;
     public bool isJumping = false;
     public bool isGrounded = true;
@@ -39,6 +40,9 @@ public class CharacterManager : NetworkBehaviour
         networkID = networkObject.NetworkObjectId;
         ChangeState(new IdleState());
         Debug.Log("network ıd of char: " + networkID);
+        
+        HeadsUpDisplay.Instance._characterManager = this;
+        HeadsUpDisplay.Instance.enabled = true;
     }
 
     protected virtual void Update()
@@ -51,7 +55,7 @@ public class CharacterManager : NetworkBehaviour
             characterNetworkManager.networkPosition.Value = transform.position;
             characterNetworkManager.networkRotation.Value = transform.rotation;
         }
-        else // If network character who came from network (other character)
+        else // If network character who came from network (client character)
         {
             transform.position = Vector3.SmoothDamp(transform.position,
              characterNetworkManager.networkPosition.Value,

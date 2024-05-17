@@ -6,9 +6,9 @@ using UnityEngine;
 public class PlayerLocomotionManager : CharacterLocomotionManager
 {
     [SerializeField] private PlayerManager _playerManager;
-    private float _verticalMovement;
-    private float _horizontalMovement;
-    private float _moveAmount;
+    private float _clientVerticalMovement;
+    private float _clientHorizontalMovement;
+    private float _clientMoveAmount;
 
 
     [Header("Movement Settings")]
@@ -67,26 +67,26 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
 
         if (_playerManager.IsOwner)
         {
-            _playerManager.characterNetworkManager.animatorVerticalValue.Value = _verticalMovement;
-            _playerManager.characterNetworkManager.animatorHorizontalValue.Value = _horizontalMovement;
-            _playerManager.characterNetworkManager.networkMoveAmount.Value = _moveAmount;
+            _playerManager.characterNetworkManager.animatorVerticalValue.Value = PlayerInputManager.Instance.VerticalInput;
+            _playerManager.characterNetworkManager.animatorHorizontalValue.Value = PlayerInputManager.Instance.HorizontalInput;
+            _playerManager.characterNetworkManager.networkMoveAmount.Value = PlayerInputManager.Instance.MoveAmount;
         }
         else
         {
-            _verticalMovement = _playerManager.characterNetworkManager.animatorVerticalValue.Value;
-            _horizontalMovement = _playerManager.characterNetworkManager.animatorHorizontalValue.Value;
-            _moveAmount = _playerManager.characterNetworkManager.networkMoveAmount.Value;
+            _clientVerticalMovement = _playerManager.characterNetworkManager.animatorVerticalValue.Value;
+            _clientHorizontalMovement = _playerManager.characterNetworkManager.animatorHorizontalValue.Value;
+            _clientMoveAmount = _playerManager.characterNetworkManager.networkMoveAmount.Value;
 
             //_playerManager.playerAnimatorManager.UpdateAnimatorMovementParameters(0, _moveAmount);
 
             if (_playerManager.characterNetworkManager.isSprinting.Value)
             {
-                EventSystem.UpdateAnimatorParameterAction?.Invoke(_playerManager.networkID, AnimatorValueType.FLOAT, "Vertical", 2, false);
+                EventSystem.UpdateAnimatorParameterAction?.Invoke(_playerManager.networkID, AnimatorValueType.FLOAT, "Vertical", 2 * 2, false);
             }
             else
             {
                 EventSystem.UpdateAnimatorParameterAction?.Invoke(_playerManager.networkID, AnimatorValueType.FLOAT, "Horizontal", 0, false);
-                EventSystem.UpdateAnimatorParameterAction?.Invoke(_playerManager.networkID, AnimatorValueType.FLOAT, "Vertical", _moveAmount, false);
+                EventSystem.UpdateAnimatorParameterAction?.Invoke(_playerManager.networkID, AnimatorValueType.FLOAT, "Vertical", _clientMoveAmount * 2, false);
             }
             //HORIZONTAL WILL USE WHEN LOCKED ON
         }
@@ -101,9 +101,9 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
 
     private void GetMovementValues()
     {
-        _verticalMovement = PlayerInputManager.Instance.VerticalInput;
-        _horizontalMovement = PlayerInputManager.Instance.HorizontalInput;
-        _moveAmount = PlayerInputManager.Instance.MoveAmount;
+        _clientVerticalMovement = PlayerInputManager.Instance.VerticalInput;
+        _clientHorizontalMovement = PlayerInputManager.Instance.HorizontalInput;
+        _clientMoveAmount = PlayerInputManager.Instance.MoveAmount;
     }
 
     private void HandleGroundedMovement(ulong id)
@@ -245,7 +245,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
                 return;
             }
 
-            if (_moveAmount >= 0)
+            if (_clientMoveAmount >= 0)
             {
                 _playerManager.characterNetworkManager.isSprinting.Value = true;
             }
@@ -258,6 +258,9 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
 
     private void UpdateStaminaValueOnSprint()
     {
+        if(!_playerManager.IsOwner)
+                return;
+
         if (_playerManager.characterNetworkManager.isSprinting.Value)
         {
             _playerManager.characterNetworkManager.currentStamina.Value -= _sprintingStaminaCost * Time.deltaTime;

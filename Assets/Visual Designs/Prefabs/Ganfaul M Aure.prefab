@@ -2055,6 +2055,8 @@ GameObject:
   - component: {fileID: 1750095851261949932}
   - component: {fileID: 2378055862364091240}
   - component: {fileID: -9095660576776416924}
+  - component: {fileID: -9130655210160818589}
+  - component: {fileID: -961385467669097768}
   - component: {fileID: 2330533734024482451}
   - component: {fileID: 2509677951764323108}
   - component: {fileID: -2440836601894614736}
@@ -2307,6 +2309,39 @@ MonoBehaviour:
   _jumpForwardSpeed: 5
   _freeFallVelocity: 2
   _dodgeStaminaCost: 25
+--- !u!114 &-9130655210160818589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5401412305628562371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cde928902e9170b4b8d3a092f17b1fee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skills:
+  - {fileID: 11400000, guid: d4819c5f1c13a4a48b6f1e334143a052, type: 2}
+  _characterManager: {fileID: 1750095851261949932}
+--- !u!114 &-961385467669097768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5401412305628562371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3e8ecb345991ee48a13f7b9b28f054e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterManager: {fileID: 1750095851261949932}
+  _lightAttacks:
+  - {fileID: 11400000, guid: 876c7d5f5a2545e44a48f2bec800f139, type: 2}
+  - {fileID: 11400000, guid: aba996db8cc5f2e4b8e309b4ab159b91, type: 2}
+  - {fileID: 11400000, guid: 8fca3a78a77762c4eaa8b3c38943df16, type: 2}
+  _heavyAttacks: []
 --- !u!114 &2330533734024482451
 MonoBehaviour:
   m_ObjectHideFlags: 0
