@@ -10,7 +10,6 @@ public class EventSystem
     public static Action <ulong> MovementLocomotionActionOnAir;
     public static Action<ulong, AnimatorValueType, string, float, bool> UpdateAnimatorParameterAction;
     public static Action <ulong, string, bool, bool, bool, bool> PlayTargetAnimationAction;
-    public static Action <ulong, string[], float> SetAnimationSpeedAction;
 
     //Skill Events
     public static Action<ulong> DodgeAction;

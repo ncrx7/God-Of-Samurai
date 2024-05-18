@@ -11,12 +11,12 @@ public class CharacterCombatManager : MonoBehaviour
 
     [Header("Attack Stats")] //TODO: MOVE THIS FIELDS TO CHARACTER STATS MANAGER
     private int _attackIndex = 0;
-    private float _attackSpeed = 2; //TODO: HAVE TO COME FROM CHARACTERSTATS
+    private float _attackSpeed = 1.5f; //TODO: HAVE TO COME FROM CHARACTERSTATS
     private float _attackLength;
     private float _lastAttackTime;
     //[SerializeField] AttackStrategy[] _heavyAttacks; 
 
-    private void Start()
+    private void Awake()
     {
         _attackLength = 1 / _attackSpeed;
 
@@ -25,16 +25,15 @@ public class CharacterCombatManager : MonoBehaviour
         {
             clipNames[i] = _lightAttacks[i].AnimationName;
         }
-
-        SetAttackAnimationSpeed();
     }
-
+ 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.L))
         {
             HandleAttack(_characterManager.networkID);
         }
+        SetAttackAnimationSpeed();
     }
     private void HandleAttack(ulong id)
     {
@@ -58,6 +57,7 @@ public class CharacterCombatManager : MonoBehaviour
 
     private void SetAttackAnimationSpeed()
     {
-        EventSystem.SetAnimationSpeedAction(_characterManager.networkID, clipNames, _attackSpeed);
+        //EventSystem.SetAnimationSpeedAction(_characterManager.networkID, clipNames, _attackSpeed);
+        EventSystem.UpdateAnimatorParameterAction?.Invoke(_characterManager.networkID, AnimatorValueType.FLOAT, "basicAttackSpeed", _attackSpeed , false);
     }
 }
