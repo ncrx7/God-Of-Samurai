@@ -27,6 +27,10 @@ public class IdleState : IState
         {
             characterManager.ChangeState(new RunningState());
         }
+        else if(characterManager.isBasicAttacking)
+        {
+            characterManager.ChangeState(new BasicAttackingState());
+        }
         //Eğer zıplama inputu geldiyse change state ile jumping statesine geç
         //characterManager.ChangeState(new JumpingState());
         //Eğer horizontal vertical yürüme değerleri 0 dan büyüksek walking statesine geç

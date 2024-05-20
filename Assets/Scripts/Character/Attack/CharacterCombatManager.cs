@@ -6,25 +6,33 @@ using UnityEngine;
 public class CharacterCombatManager : MonoBehaviour
 {
     [SerializeField] CharacterManager _characterManager;
-    [SerializeField] AttackStrategy[] _lightAttacks;
-    public string[] clipNames;
+    [SerializeField] AttackStrategy[] _comboAttacks;
+    //[SerializeField] AttackStrategy[] _heavyAttacks; 
 
     [Header("Attack Stats")] //TODO: MOVE THIS FIELDS TO CHARACTER STATS MANAGER
     private int _attackIndex = 0;
-    private float _attackSpeed = 1.5f; //TODO: HAVE TO COME FROM CHARACTERSTATS
-    private float _attackLength;
-    private float _lastAttackTime;
-    //[SerializeField] AttackStrategy[] _heavyAttacks; 
+    private float _attackSpeed = 1.5f; // HOW MANY ATTACKS PER SECOND
+    private float _attackTimeLength; // HOW MANY TIME AN ATTACK TAKE
+    private float _lastAttackTime; // LAST ATTACK TIME
+    private float _comboResetTime = 1; //IF THE COMBO IS NOT CONTINUED WITHIN THIS TIME, COMBO WILL BE RESET
+    private float _comboCooldown = 2f; // THE COMBO COOLDOWN, AFTER MAKE A COMBO
+
+
+    private bool _canCombo = true;
+
+    private void OnEnable()
+    {
+        EventSystem.HandleBasicAttackAction += HandleAttack;
+    }
+
+    private void OnDisable()
+    {
+        EventSystem.HandleBasicAttackAction -= HandleAttack;
+    }
 
     private void Awake()
     {
-        _attackLength = 1 / _attackSpeed;
-
-        clipNames = new string[_lightAttacks.Length];
-        for (int i = 0; i < _lightAttacks.Length; i++)
-        {
-            clipNames[i] = _lightAttacks[i].AnimationName;
-        }
+        _attackTimeLength = 1 / _attackSpeed;
     }
  
     private void Update()
@@ -33,23 +41,34 @@ public class CharacterCombatManager : MonoBehaviour
         {
             HandleAttack(_characterManager.networkID);
         }
+
         SetAttackAnimationSpeed();
     }
+    //TODO: ADJUST HANDLEATTACK FUNCTION ACCORDING TO WEAPON BASED
     private void HandleAttack(ulong id)
     {
-        Debug.Log("Before id attack performed");
+        //Debug.Log("Before id attack performed");
         if (id != _characterManager.networkID)
             return;
-        Debug.Log("After id attack performed");
-        if (Time.time >= _lastAttackTime + _attackLength)
+
+        if(!_canCombo)
+            return;
+
+        if(Time.time - _lastAttackTime > _comboResetTime)
         {
-            Debug.Log("attack inside performed");
-            _lightAttacks[_attackIndex].Attack(_characterManager.networkID);
+            _attackIndex = 0;
+        }
+        
+        if (Time.time >= _lastAttackTime + _attackTimeLength)
+        {
+            //Debug.Log("attack inside performed");
+            _comboAttacks[_attackIndex].Attack(_characterManager.networkID);
             _attackIndex++;
             _lastAttackTime = Time.time;
 
-            if (_attackIndex >= _lightAttacks.Length)
+            if (_attackIndex >= _comboAttacks.Length)
             {
+                StartCoroutine(SetComboCooldown());
                 _attackIndex = 0;
             }
         }
@@ -59,5 +78,12 @@ public class CharacterCombatManager : MonoBehaviour
     {
         //EventSystem.SetAnimationSpeedAction(_characterManager.networkID, clipNames, _attackSpeed);
         EventSystem.UpdateAnimatorParameterAction?.Invoke(_characterManager.networkID, AnimatorValueType.FLOAT, "basicAttackSpeed", _attackSpeed , false);
+    }
+
+    IEnumerator SetComboCooldown()
+    {
+        _canCombo = false;
+        yield return new WaitForSeconds(_comboCooldown);
+        _canCombo = true;
     }
 }

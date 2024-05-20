@@ -2255,6 +2255,7 @@ MonoBehaviour:
   networkObject: {fileID: 0}
   networkID: 0
   isPerformingAction: 0
+  isAttacking: 0
   isRunning: 0
   isJumping: 0
   isGrounded: 1
@@ -2337,11 +2338,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterManager: {fileID: 1750095851261949932}
-  _lightAttacks:
+  _comboAttacks:
   - {fileID: 11400000, guid: 876c7d5f5a2545e44a48f2bec800f139, type: 2}
   - {fileID: 11400000, guid: aba996db8cc5f2e4b8e309b4ab159b91, type: 2}
   - {fileID: 11400000, guid: 8fca3a78a77762c4eaa8b3c38943df16, type: 2}
-  _heavyAttacks: []
+  - {fileID: 11400000, guid: 5397e3dde4ea0da4fadf5e09a129c73a, type: 2}
+  clipNames: []
 --- !u!114 &2330533734024482451
 MonoBehaviour:
   m_ObjectHideFlags: 0

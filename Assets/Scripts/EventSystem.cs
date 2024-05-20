@@ -16,4 +16,7 @@ public class EventSystem
     public static Action <ulong> SprintAction;
     public static Action <ulong> JumpAction;
     public static Action <ulong, int> OnSkillButtonPressed;
+
+    //Attack Events
+    public static Action<ulong> HandleBasicAttackAction;
 }

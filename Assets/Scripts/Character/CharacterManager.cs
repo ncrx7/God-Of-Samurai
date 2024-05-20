@@ -14,7 +14,7 @@ public class CharacterManager : NetworkBehaviour
 
     [Header("Character Flags")]
     public bool isPerformingAction = false;
-    public bool isAttacking = false;
+    public bool isBasicAttacking = false;
     public bool isRunning = false;
     public bool isJumping = false;
     public bool isGrounded = true;

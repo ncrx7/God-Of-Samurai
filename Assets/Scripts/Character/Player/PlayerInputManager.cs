@@ -173,8 +173,12 @@ public class PlayerInputManager : MonoBehaviour
 
     private void HandleAttackInput(InputAction.CallbackContext callbackContext)
     {
+        if(playerManager == null)
+            return;
+
         attackInput = true;
-        playerManager.isAttacking = true;
+        EventSystem.HandleBasicAttackAction?.Invoke(playerManager.networkID);
+        playerManager.isBasicAttacking = true;
     }
 
 /*     private void HandleSprintInput()

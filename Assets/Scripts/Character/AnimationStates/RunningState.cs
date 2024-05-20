@@ -40,6 +40,10 @@ public class RunningState : IState
         {
             characterManager.ChangeState(new FallingState());
         }
+        else if(characterManager.isBasicAttacking)
+        {
+            characterManager.ChangeState(new BasicAttackingState());
+        }
 
     }
 }
