@@ -45,6 +45,7 @@ public class CharacterCombatManager : MonoBehaviour
         SetAttackAnimationSpeed();
     }
     //TODO: ADJUST HANDLEATTACK FUNCTION ACCORDING TO WEAPON BASED
+    //TODO: CAN CHANGE COMBO WHEN JUMP AND FALLING STATE
     private void HandleAttack(ulong id)
     {
         //Debug.Log("Before id attack performed");
@@ -54,7 +55,8 @@ public class CharacterCombatManager : MonoBehaviour
         if(!_canCombo)
             return;
 
-        if(Time.time - _lastAttackTime > _comboResetTime)
+        //WHEN COMBO STATE HAVE BEEN ADDED, TIME.TIME CAN REMOVE. CAN ADD COUNTER THAT CAN PROCCES JUST COMBAT STATE
+        if(Time.time - _lastAttackTime > _comboResetTime) 
         {
             _attackIndex = 0;
         }

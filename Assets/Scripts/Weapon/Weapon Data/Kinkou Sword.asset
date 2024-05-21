@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5885814a8e1e5424b99b8d12ff358c09, type: 3}
+  m_Name: Kinkou Sword
+  m_EditorClassIdentifier: 
+  AttackDamage: 10
+  AbilityPower: 5
+  BlockPower: 5
+  slashVfx: {fileID: 149236427146737601, guid: e02dac48c57b7404bb90d5c08d05ea36, type: 3}
