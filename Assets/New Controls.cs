@@ -162,6 +162,33 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""8be4d952-44e2-422d-9fac-ce12f3f6b5bb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""EAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""94e28530-48fd-4845-94bc-4b547c464688"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""828e3329-fc02-44f0-acfa-68a9ba28eb29"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -208,6 +235,39 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dd4086e3-3284-48c5-8698-0b7b4feeb365"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6f07833b-b558-4a36-9b52-1c320dff22bf"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""386f4756-6024-424f-b218-6dcea1a7b292"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -226,6 +286,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         m_PlayerActions_Sprint = m_PlayerActions.FindAction("Sprint", throwIfNotFound: true);
         m_PlayerActions_Jump = m_PlayerActions.FindAction("Jump", throwIfNotFound: true);
         m_PlayerActions_Attack = m_PlayerActions.FindAction("Attack", throwIfNotFound: true);
+        m_PlayerActions_QAttack = m_PlayerActions.FindAction("QAttack", throwIfNotFound: true);
+        m_PlayerActions_EAttack = m_PlayerActions.FindAction("EAttack", throwIfNotFound: true);
+        m_PlayerActions_RAttack = m_PlayerActions.FindAction("RAttack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -383,6 +446,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActions_Sprint;
     private readonly InputAction m_PlayerActions_Jump;
     private readonly InputAction m_PlayerActions_Attack;
+    private readonly InputAction m_PlayerActions_QAttack;
+    private readonly InputAction m_PlayerActions_EAttack;
+    private readonly InputAction m_PlayerActions_RAttack;
     public struct PlayerActionsActions
     {
         private @NewControls m_Wrapper;
@@ -391,6 +457,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         public InputAction @Sprint => m_Wrapper.m_PlayerActions_Sprint;
         public InputAction @Jump => m_Wrapper.m_PlayerActions_Jump;
         public InputAction @Attack => m_Wrapper.m_PlayerActions_Attack;
+        public InputAction @QAttack => m_Wrapper.m_PlayerActions_QAttack;
+        public InputAction @EAttack => m_Wrapper.m_PlayerActions_EAttack;
+        public InputAction @RAttack => m_Wrapper.m_PlayerActions_RAttack;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -412,6 +481,15 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @Attack.started += instance.OnAttack;
             @Attack.performed += instance.OnAttack;
             @Attack.canceled += instance.OnAttack;
+            @QAttack.started += instance.OnQAttack;
+            @QAttack.performed += instance.OnQAttack;
+            @QAttack.canceled += instance.OnQAttack;
+            @EAttack.started += instance.OnEAttack;
+            @EAttack.performed += instance.OnEAttack;
+            @EAttack.canceled += instance.OnEAttack;
+            @RAttack.started += instance.OnRAttack;
+            @RAttack.performed += instance.OnRAttack;
+            @RAttack.canceled += instance.OnRAttack;
         }
 
         private void UnregisterCallbacks(IPlayerActionsActions instance)
@@ -428,6 +506,15 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @Attack.started -= instance.OnAttack;
             @Attack.performed -= instance.OnAttack;
             @Attack.canceled -= instance.OnAttack;
+            @QAttack.started -= instance.OnQAttack;
+            @QAttack.performed -= instance.OnQAttack;
+            @QAttack.canceled -= instance.OnQAttack;
+            @EAttack.started -= instance.OnEAttack;
+            @EAttack.performed -= instance.OnEAttack;
+            @EAttack.canceled -= instance.OnEAttack;
+            @RAttack.started -= instance.OnRAttack;
+            @RAttack.performed -= instance.OnRAttack;
+            @RAttack.canceled -= instance.OnRAttack;
         }
 
         public void RemoveCallbacks(IPlayerActionsActions instance)
@@ -459,5 +546,8 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         void OnSprint(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
+        void OnQAttack(InputAction.CallbackContext context);
+        void OnEAttack(InputAction.CallbackContext context);
+        void OnRAttack(InputAction.CallbackContext context);
     }
 }

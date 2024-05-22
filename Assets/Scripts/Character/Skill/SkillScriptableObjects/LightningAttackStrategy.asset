@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0119b530f1e780a4cb35579f5eacb266, type: 3}
   m_Name: LightningAttackStrategy
   m_EditorClassIdentifier: 
+  lightningPrefab: {fileID: 6313055277016519438, guid: 2050202e671a0fb41ae6a9f645ce10bd,
+    type: 3}
+  fxTransform: {fileID: 0}

@@ -48,6 +48,11 @@ public class PlayerInputManager : MonoBehaviour
             _playerControls.PlayerActions.Sprint.canceled += HandleSprintingInputOnReleased;
 
             _playerControls.PlayerActions.Jump.performed += i => jumpInput = true;
+
+            //Abilities Skills
+            _playerControls.PlayerActions.QAttack.performed += HandleSkillInputs;
+            _playerControls.PlayerActions.EAttack.performed += HandleSkillInputs;
+            _playerControls.PlayerActions.RAttack.performed += HandleSkillInputs;
         }
 
         _playerControls.Enable();
@@ -179,6 +184,28 @@ public class PlayerInputManager : MonoBehaviour
         attackInput = true;
         EventSystem.HandleBasicAttackAction?.Invoke(playerManager.networkID);
         playerManager.isBasicAttacking = true;
+    }
+
+    private void HandleSkillInputs(InputAction.CallbackContext callbackContext)
+    {
+        string controlName = callbackContext.control.name;
+
+        switch (controlName)
+        {
+            case "q":
+                Debug.Log("Q ya basıldı");
+                EventSystem.OnSkillButtonPressed?.Invoke(playerManager.networkID, 0);
+                break;
+            case "e":
+                Debug.Log("E ye basıldı");
+                break;
+            case "r":
+                Debug.Log("R ye basıldı");
+                break;
+            default:
+                Debug.Log("Bilinmeyen tuş: " + controlName);
+                break;
+        }
     }
 
 /*     private void HandleSprintInput()

@@ -11,10 +11,10 @@ public class CharacterCombatManager : MonoBehaviour
 
     [Header("Attack Stats")] //TODO: MOVE THIS FIELDS TO CHARACTER STATS MANAGER
     private int _attackIndex = 0;
-    private float _attackSpeed = 1.5f; // HOW MANY ATTACKS PER SECOND
+    private float _attackSpeed = 2.5f; // HOW MANY ATTACKS PER SECOND
     private float _attackTimeLength; // HOW MANY TIME AN ATTACK TAKE
     private float _lastAttackTime; // LAST ATTACK TIME
-    private float _comboResetTime = 1; //IF THE COMBO IS NOT CONTINUED WITHIN THIS TIME, COMBO WILL BE RESET
+    private float _comboResetTime = 2; //IF THE COMBO IS NOT CONTINUED WITHIN THIS TIME, COMBO WILL BE RESET
     private float _comboCooldown = 2f; // THE COMBO COOLDOWN, AFTER MAKE A COMBO
 
 
@@ -53,6 +53,9 @@ public class CharacterCombatManager : MonoBehaviour
             return;
 
         if(!_canCombo)
+            return;
+
+        if(_characterManager.isPerformingAction)
             return;
 
         //WHEN COMBO STATE HAVE BEEN ADDED, TIME.TIME CAN REMOVE. CAN ADD COUNTER THAT CAN PROCCES JUST COMBAT STATE

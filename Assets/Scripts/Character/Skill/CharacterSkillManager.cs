@@ -6,6 +6,7 @@ public class CharacterSkillManager : MonoBehaviour
 {
     [SerializeField] SkillStrategy[] _skills;
     [SerializeField] CharacterManager _characterManager;
+    [SerializeField] Transform _lightningFurryAbilityTargetTransform;
 
     private void OnEnable()
     {
@@ -23,5 +24,10 @@ public class CharacterSkillManager : MonoBehaviour
         {
             _skills[skillIndex].CastSkill(transform);
         }
+    }
+
+    public Transform GetLightningFurryAbilityTargetTransform()
+    {
+        return _lightningFurryAbilityTargetTransform;
     }
 }
