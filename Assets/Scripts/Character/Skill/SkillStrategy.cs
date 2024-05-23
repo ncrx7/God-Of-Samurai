@@ -4,5 +4,6 @@ using UnityEngine;
 
 public abstract class SkillStrategy : ScriptableObject
 {
+    public float skillCooldown;
     public abstract void CastSkill(Transform origin);
 }

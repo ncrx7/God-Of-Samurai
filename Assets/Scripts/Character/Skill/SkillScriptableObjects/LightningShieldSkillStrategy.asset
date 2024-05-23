@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0119b530f1e780a4cb35579f5eacb266, type: 3}
-  m_Name: LightningAttackStrategy
+  m_Script: {fileID: 11500000, guid: 35fa8a5cc7dabc34b9441acae7d4687f, type: 3}
+  m_Name: LightningShieldSkillStrategy
   m_EditorClassIdentifier: 
-  skillCooldown: 4
-  lightningPrefab: {fileID: 8385243853736716168, guid: 82726404f84d5c242a12cb60e73ec65e,
+  skillCooldown: 10
+  lightningShieldObject: {fileID: 3777777708347653275, guid: e9f0c11fc682a6a42b775a338624b0a2,
     type: 3}
-  fxTransform: {fileID: 0}
-  rangeDistance: 30
+  protectionAmount: 30
+  shieldDuration: 5
   manaCost: 0

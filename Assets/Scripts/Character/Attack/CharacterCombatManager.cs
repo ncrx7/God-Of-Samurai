@@ -11,7 +11,7 @@ public class CharacterCombatManager : MonoBehaviour
 
     [Header("Attack Stats")] //TODO: MOVE THIS FIELDS TO CHARACTER STATS MANAGER
     private int _attackIndex = 0;
-    private float _attackSpeed = 2.5f; // HOW MANY ATTACKS PER SECOND
+    private float _attackSpeed = 2.0f; // HOW MANY ATTACKS PER SECOND
     private float _attackTimeLength; // HOW MANY TIME AN ATTACK TAKE
     private float _lastAttackTime; // LAST ATTACK TIME
     private float _comboResetTime = 2; //IF THE COMBO IS NOT CONTINUED WITHIN THIS TIME, COMBO WILL BE RESET

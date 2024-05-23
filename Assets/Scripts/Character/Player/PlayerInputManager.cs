@@ -198,6 +198,7 @@ public class PlayerInputManager : MonoBehaviour
                 break;
             case "e":
                 Debug.Log("E ye basıldı");
+                EventSystem.OnSkillButtonPressed?.Invoke(playerManager.networkID, 1);
                 break;
             case "r":
                 Debug.Log("R ye basıldı");

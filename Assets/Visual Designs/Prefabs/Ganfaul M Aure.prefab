@@ -2388,6 +2388,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skills:
   - {fileID: 11400000, guid: d4819c5f1c13a4a48b6f1e334143a052, type: 2}
+  - {fileID: 11400000, guid: 4f51805e09d802543bc38545776eaa18, type: 2}
   _characterManager: {fileID: 1750095851261949932}
   _lightningFurryAbilityTargetTransform: {fileID: 4571653781673202615}
 --- !u!114 &-961385467669097768
@@ -2446,13 +2447,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2.2
-  m_Radius: 0.35
+  m_Height: 2.09
+  m_Radius: 0.3
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.99, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!82 &-2440836601894614736
 AudioSource:
   m_ObjectHideFlags: 0
